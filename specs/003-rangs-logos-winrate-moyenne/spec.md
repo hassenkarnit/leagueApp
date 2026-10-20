@@ -11,6 +11,13 @@
 **Depends on**: feature `002-live-game-card` (card « Partie en cours », rang et statistiques Solo/Duo de
 chaque joueur : FR-012 à FR-015).
 
+## Clarifications
+
+### Session 2026-10-21
+
+- Q: À partir de quel pourcentage la couleur est-elle franchement verte ? → A: 52 % (échelle asymétrique : rouge franc à 45 %, jaune à 50 %, vert franc à 52 %).
+- Q: Comment traiter les joueurs non classés ou masqués dans le rang moyen ? → A: Les ignorer ; moyenne sur les seuls joueurs classés, avec la mention « N/5 joueurs classés ».
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Voir le rang de chaque joueur avec son emblème (Priority: P1)
@@ -44,13 +51,13 @@ pas de faux.
 
 Le pourcentage de victoires de chaque joueur est coloré selon une échelle continue : 50 % est jaune ;
 en dessous, la couleur glisse progressivement vers le rouge (à 49 % elle commence à rougir, à 45 % et
-moins elle est franchement rouge) ; au-dessus de 50 %, elle glisse de la même façon vers le vert (à
-55 % et plus, franchement verte). L'utilisateur repère immédiatement les joueurs qui gagnent beaucoup
+moins elle est franchement rouge) ; au-dessus de 50 %, elle glisse vers le vert (à
+52 % et plus, franchement verte). L'utilisateur repère immédiatement les joueurs qui gagnent beaucoup
 ou perdent beaucoup.
 
 **Why this priority**: apporte une lecture rapide du niveau réel, mais la card reste utile sans.
 
-**Independent Test**: afficher des joueurs à 40 %, 45 %, 47 %, 50 %, 53 %, 55 % et 60 % et vérifier
+**Independent Test**: afficher des joueurs à 40 %, 45 %, 47 %, 50 %, 51 %, 52 % et 60 % et vérifier
 que les couleurs sont respectivement rouge, rouge, orangé, jaune, jaune-vert, vert, vert.
 
 **Acceptance Scenarios**:
@@ -59,11 +66,12 @@ que les couleurs sont respectivement rouge, rouge, orangé, jaune, jaune-vert, v
    jaune.
 2. **Given** un joueur à 45 % ou moins, **When** la card s'affiche, **Then** son pourcentage est
    rouge franc (identique pour 45 % et 30 %).
-3. **Given** un joueur à 55 % ou plus, **When** la card s'affiche, **Then** son pourcentage est vert
+3. **Given** un joueur à 52 % ou plus, **When** la card s'affiche, **Then** son pourcentage est vert
    franc.
-4. **Given** un joueur entre 45 % et 50 % (ou entre 50 % et 55 %), **When** la card s'affiche,
+4. **Given** un joueur entre 45 % et 50 % (ou entre 50 % et 52 %), **When** la card s'affiche,
    **Then** la couleur est intermédiaire, d'autant plus proche du rouge (ou du vert) que le
-   pourcentage s'en rapproche, de façon continue (47 % est plus rouge que 49 %).
+   pourcentage s'en rapproche, de façon continue (47 % est plus rouge que 49 % ; 51 % est plus vert
+   que 50,5 %).
 5. **Given** un joueur sans pourcentage (« Non classé », « Statistiques indisponibles »), **When** la
    card s'affiche, **Then** aucune couleur de winrate n'est appliquée.
 
@@ -112,7 +120,7 @@ et vérifier que l'en-tête affiche « Émeraude II » avec l'emblème Émeraude
 - **Joueur masqué par Riot** : exclu de la moyenne, comme un joueur non classé.
 - **Moyenne sur échelle Master et plus** : Master, Grandmaster et Challenger comptent chacun pour un
   cran ; pas de division affichée.
-- **Winrate pile à 50 %, 45 % ou 55 %** : jaune pur, rouge pur et vert pur respectivement.
+- **Winrate pile à 50 %, 45 % ou 52 %** : jaune pur, rouge pur et vert pur respectivement.
 - **Winrate non entier** : la couleur se calcule sur le pourcentage exact, même si l'affichage est
   arrondi à l'unité (FR-013 de la 002).
 - **Affichage en mode sombre / écran étroit** : emblèmes et couleurs restent lisibles.
@@ -138,9 +146,10 @@ et vérifier que l'en-tête affiche « Émeraude II » avec l'emblème Émeraude
 **Winrate coloré**
 
 - **FR-005**: Le pourcentage de victoires DOIT être coloré d'après sa valeur exacte : jaune à 50 %,
-  rouge franc à 45 % et moins, vert franc à 55 % et plus, avec un dégradé continu et monotone entre
+  rouge franc à 45 % et moins, vert franc à 52 % et plus, avec un dégradé continu et monotone entre
   ces points (de plus en plus rouge quand le pourcentage baisse vers 45 %, de plus en plus vert
-  quand il monte vers 55 %).
+  quand il monte vers 52 %). L'échelle est volontairement asymétrique (5 points côté rouge, 2 côté
+  vert).
 - **FR-006**: Le pourcentage DOIT rester affiché en chiffres (la couleur n'est jamais seule), avec un
   contraste lisible sur fond clair et sombre.
 - **FR-007**: Aucune couleur de winrate NE DOIT être appliquée aux joueurs sans pourcentage.
@@ -187,7 +196,7 @@ et vérifier que l'en-tête affiche « Émeraude II » avec l'emblème Émeraude
 - **SC-002**: Un utilisateur identifie le niveau d'une équipe en moins de 5 secondes sans calcul
   mental, grâce au rang moyen.
 - **SC-003**: Les couleurs du winrate suivent la règle sur 100 % des valeurs de test (30, 45, 47, 49,
-  50, 51, 53, 55, 70 %), avec une variation visible entre 45 % et 55 %.
+  50, 51, 52, 70 %), avec une variation visible entre 45 % et 52 %.
 - **SC-004**: L'exemple de référence (2 Émeraude IV + 3 Émeraude I) donne « Émeraude II » dans 100 %
   des cas de test, ainsi que les cas limites (arrondi à 0,5, paliers sans division, joueurs non
   classés).
@@ -198,8 +207,8 @@ et vérifier que l'en-tête affiche « Émeraude II » avec l'emblème Émeraude
 - Les emblèmes sont ceux des paliers du jeu ; leur provenance (fichiers embarqués ou ressources
   publiques) est un choix d'implémentation laissé au plan.
 - Les rangs utilisés sont ceux de la classée Solo/Duo de la saison en cours, déjà affichés par la 002.
-- Les seuils 45 % / 50 % / 55 % du dégradé sont fixes (non configurables) ; le côté vert est
-  symétrique du côté rouge (55 %), par choix par défaut.
+- Les seuils 45 % / 50 % / 52 % du dégradé sont fixes (non configurables) ; le vert est franc dès
+  52 % (choix de l'utilisateur).
 - Un rang moyen d'équipe n'est calculé que dans la card « Partie en cours » ; il n'apparaît pas dans
   l'historique.
 - Les points de ligue sont ignorés dans la moyenne pour rester simple et lisible.

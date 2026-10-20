@@ -31,5 +31,4 @@
 
 ## Notes
 
-- Choix par défaut à confirmer pendant `/speckit-clarify` : symétrie du vert à 55 %, emblème neutre
-  « sans rang », exclusion des non classés de la moyenne.
+- Clarifications du 2026-10-21 intégrées (vert franc à 52 %, non classés ignorés dans la moyenne).

@@ -24,3 +24,11 @@ export const DEFAULT_PLATFORM: Platform = 'euw1';
 export function isPlatform(value: string): value is Platform {
 	return PLATFORMS.some((p) => p.id === value);
 }
+
+/** « EUW1_7212345678 » → « euw1 » : serveur d'origine d'un match (lien « Voir le profil », US3). */
+export function platformFromMatchId(matchId: string): Platform | null {
+	const separator = matchId.indexOf('_');
+	if (separator <= 0) return null;
+	const candidate = matchId.slice(0, separator).toLowerCase();
+	return isPlatform(candidate) ? candidate : null;
+}

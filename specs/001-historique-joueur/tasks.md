@@ -166,14 +166,14 @@ Riot est toujours simulée (MSW, `onUnhandledFrame: 'error'`).
 
 ### Tests for User Story 3 (écrire d'abord, vérifier qu'ils ÉCHOUENT) ⚠️
 
-- [ ] T069 [P] [US3] Tests dans `src/lib/shared/platforms.test.ts` : `platformFromMatchId('EUW1_7212345678')` → `euw1`, `'OC1_…'` → `oc1`, préfixe inconnu → `null`
-- [ ] T070 [P] [US3] Test composant `src/lib/components/TeamTable.svelte.test.ts` : chaque participant humain a un lien « Voir le profil » vers `/joueur/{platform}/{gameName}-{tagLine}` (plateforme déduite du `matchId`, parties encodées) ; aucun lien pour un bot
+- [X] T069 [P] [US3] Tests dans `src/lib/shared/platforms.test.ts` : `platformFromMatchId('EUW1_7212345678')` → `euw1`, `'OC1_…'` → `oc1`, préfixe inconnu → `null`
+- [X] T070 [P] [US3] Test composant `src/lib/components/TeamTable.svelte.test.ts` : chaque participant humain a un lien « Voir le profil » vers `/joueur/{platform}/{gameName}-{tagLine}` (plateforme déduite du `matchId`, parties encodées) ; aucun lien pour un bot
 
 ### Implementation for User Story 3
 
-- [ ] T071 [US3] Ajouter `platformFromMatchId` dans `src/lib/shared/platforms.ts` (fait passer T069)
-- [ ] T072 [US3] Ajouter le lien « Voir le profil » (URL suffixée de `?from=match`) dans `src/lib/components/TeamTable.svelte` (fait passer T070)
-- [ ] T073 [US3] Restaurer l'état au retour arrière dans `src/routes/joueur/[platform]/[riotId]/+page.svelte` via `export const snapshot` (matchs déjà chargés + match déplié ; le défilement est restauré nativement par SvelteKit)
+- [X] T071 [US3] Ajouter `platformFromMatchId` dans `src/lib/shared/platforms.ts` (fait passer T069)
+- [X] T072 [US3] Ajouter le lien « Voir le profil » (URL suffixée de `?from=match`) dans `src/lib/components/TeamTable.svelte` (fait passer T070)
+- [X] T073 [US3] Restaurer l'état au retour arrière dans `src/routes/joueur/[platform]/[riotId]/+page.svelte` via `export const snapshot` (matchs déjà chargés + match déplié ; le défilement est restauré nativement par SvelteKit)
 - [ ] T074 [US3] Valider manuellement le scénario 16 de `specs/001-historique-joueur/quickstart.md` ; commit `feat(us3): navigation vers le profil d'un participant`
 
 **Checkpoint**: Toutes les User Stories sont fonctionnelles indépendamment.

@@ -1,11 +1,21 @@
+<script module lang="ts">
+	import type { MatchSummary } from '#lib/shared/types.ts';
+
+	/** État sauvegardé par SvelteKit (snapshot) pour le retrouver au retour arrière (US3). */
+	export interface MatchListState {
+		matches: MatchSummary[];
+		hasMore: boolean;
+		pagesLoaded: number;
+		expanded: Record<string, boolean>;
+	}
+</script>
+
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import { toApiError } from '#lib/client/api.ts';
 	import type {
 		ApiError,
 		EncounterCounts,
 		MatchPage,
-		MatchSummary,
 		Participant,
 		Puuid
 	} from '#lib/shared/types.ts';
@@ -17,8 +27,7 @@
 		loadPage,
 		pageSize = 20,
 		loadCounts,
-		onselect,
-		participantActions
+		onselect
 	}: {
 		initialPage: MatchPage;
 		/** Charge la page qui commence à `start` (index dans l'historique Riot). */
@@ -26,7 +35,6 @@
 		pageSize?: number;
 		loadCounts?: (puuids: Puuid[]) => Promise<EncounterCounts>;
 		onselect?: (participant: Participant) => void;
-		participantActions?: Snippet<[Participant]>;
 	} = $props();
 
 	// Valeurs initiales seulement : la liste grandit ensuite avec « Plus de matchs ».
@@ -37,6 +45,18 @@
 	let pagesLoaded = $state(1);
 	let loading = $state(false);
 	let error = $state<ApiError | null>(null);
+	let expanded = $state<Record<string, boolean>>({});
+
+	export function capture(): MatchListState {
+		return $state.snapshot({ matches, hasMore, pagesLoaded, expanded });
+	}
+
+	export function restore(state: MatchListState): void {
+		matches = state.matches;
+		hasMore = state.hasMore;
+		pagesLoaded = state.pagesLoaded;
+		expanded = state.expanded;
+	}
 
 	async function loadMore() {
 		loading = true;
@@ -62,7 +82,14 @@
 {:else}
 	<div class="flex flex-col gap-3">
 		{#each matches as match (match.matchId)}
-			<MatchRow {match} {loadCounts} {onselect} {participantActions} />
+			<MatchRow
+				{match}
+				{loadCounts}
+				{onselect}
+				bind:expanded={
+					() => expanded[match.matchId] ?? false, (value) => (expanded[match.matchId] = value)
+				}
+			/>
 		{/each}
 	</div>
 {/if}

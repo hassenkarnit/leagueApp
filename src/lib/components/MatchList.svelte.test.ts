@@ -34,6 +34,25 @@ describe('MatchList', () => {
 		await expect.poll(() => screen.getByRole('status').elements().length).toBe(0);
 	});
 
+	it('sauvegarde puis restaure les pages chargées et les matchs dépliés (retour arrière, US3)', async () => {
+		const loadPage = vi.fn(async () => matchPage(2, 20));
+		const first = render(MatchList, { initialPage: matchPage(20, 0, true), loadPage });
+		await first.getByRole('button', { name: 'Plus de matchs' }).click();
+		await expect.poll(() => first.getByRole('article').elements().length).toBe(22);
+		await first.getByRole('button', { name: 'Voir les participants' }).first().click();
+		const saved = first.component.capture();
+		expect(JSON.parse(JSON.stringify(saved))).toEqual(saved); // sérialisable (sessionStorage)
+		await first.unmount();
+
+		const second = render(MatchList, { initialPage: matchPage(20, 0, true), loadPage });
+		second.component.restore(saved);
+		await expect.poll(() => second.getByRole('article').elements().length).toBe(22);
+		expect(
+			second.getByRole('button', { name: 'Masquer les participants' }).elements()
+		).toHaveLength(1);
+		expect(loadPage).toHaveBeenCalledTimes(1); // aucune page rechargée
+	});
+
 	it('garde les matchs affichés et montre l’erreur si la page suivante échoue', async () => {
 		const loadPage = vi.fn(async () => {
 			throw new ClientApiError(

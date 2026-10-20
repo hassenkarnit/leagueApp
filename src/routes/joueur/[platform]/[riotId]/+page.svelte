@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snapshot } from '@sveltejs/kit';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { apiGet } from '#lib/client/api.ts';
@@ -6,7 +7,7 @@
 	import { reference } from '#lib/client/reference.svelte.ts';
 	import EncounterPanel from '#lib/components/EncounterPanel.svelte';
 	import ErrorMessage from '#lib/components/ErrorMessage.svelte';
-	import MatchList from '#lib/components/MatchList.svelte';
+	import MatchList, { type MatchListState } from '#lib/components/MatchList.svelte';
 	import PlayerHeader from '#lib/components/PlayerHeader.svelte';
 	import SearchForm from '#lib/components/SearchForm.svelte';
 	import { isPlatform } from '#lib/shared/platforms.ts';
@@ -36,6 +37,15 @@
 
 	/** Joueur dont on affiche les parties communes (panneau latéral). */
 	let selected = $state<Participant | null>(null);
+
+	// Au retour arrière, on retrouve les matchs déjà chargés et dépliés (US3).
+	let list = $state<ReturnType<typeof MatchList>>();
+	export const snapshot: Snapshot<MatchListState | undefined> = {
+		capture: () => list?.capture(),
+		restore: (state) => {
+			if (state) list?.restore(state);
+		}
+	};
 </script>
 
 <svelte:head>
@@ -69,6 +79,7 @@
 			<!-- Nouvelle liste à chaque joueur : son état (pages chargées) ne doit pas être réutilisé. -->
 			{#key data.apiBase}
 				<MatchList
+					bind:this={list}
 					initialPage={data.firstPage}
 					{loadPage}
 					{loadCounts}

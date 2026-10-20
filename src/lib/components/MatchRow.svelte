@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import { formatDuration, formatKda, formatRelativeDate } from '#lib/shared/format.ts';
+	import { platformFromMatchId } from '#lib/shared/platforms.ts';
 	import type { EncounterCounts, MatchSummary, Participant, Puuid } from '#lib/shared/types.ts';
 	import TeamTable from './TeamTable.svelte';
 
@@ -8,16 +8,16 @@
 		match,
 		expanded = $bindable(false),
 		loadCounts,
-		onselect,
-		participantActions
+		onselect
 	}: {
 		match: MatchSummary;
 		expanded?: boolean;
 		/** Badges 👥 : parties communes avec le compte de référence (US2). */
 		loadCounts?: (puuids: Puuid[]) => Promise<EncounterCounts>;
 		onselect?: (participant: Participant) => void;
-		participantActions?: Snippet<[Participant]>;
 	} = $props();
+
+	const platform = $derived(platformFromMatchId(match.matchId));
 
 	let counts = $state<EncounterCounts>({});
 
@@ -84,7 +84,7 @@
 	{#if expanded}
 		<div id={detailsId} class="flex flex-col gap-4 border-t border-zinc-100 p-3 sm:flex-row">
 			{#each match.teams as team (team.side)}
-				<TeamTable {team} {counts} {onselect} actions={participantActions} />
+				<TeamTable {team} {platform} {counts} {onselect} />
 			{/each}
 		</div>
 	{/if}

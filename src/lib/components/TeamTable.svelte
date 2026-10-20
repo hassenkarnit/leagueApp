@@ -1,23 +1,31 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { formatKda } from '#lib/shared/format.ts';
-	import type { EncounterCounts, Participant, Team } from '#lib/shared/types.ts';
+	import { toUrlSegment } from '#lib/shared/riot-id.ts';
+	import type { EncounterCounts, Participant, Platform, Team } from '#lib/shared/types.ts';
 	import EncounterBadge from './EncounterBadge.svelte';
 
 	let {
 		team,
+		platform = null,
 		counts = {},
-		onselect,
-		actions
+		onselect
 	}: {
 		team: Team;
+		/** Serveur du match : nécessaire pour le lien « Voir le profil » (US3). */
+		platform?: Platform | null;
 		/** Parties communes avec le compte de référence (badges 👥, US2). */
 		counts?: EncounterCounts;
 		/** Clic sur un joueur humain (panneau « parties communes », US2). */
 		onselect?: (participant: Participant) => void;
-		/** Emplacement pour des actions supplémentaires sur un joueur humain (US3). */
-		actions?: Snippet<[Participant]>;
 	} = $props();
+
+	function riotIdSegment(participant: Participant): string {
+		return toUrlSegment({
+			gameName: participant.gameName ?? '',
+			tagLine: participant.tagLine ?? ''
+		});
+	}
 
 	const OUTCOME_LABELS = { win: 'Victoire', loss: 'Défaite', remake: 'Partie annulée' } as const;
 	const OUTCOME_COLORS = {
@@ -59,8 +67,17 @@
 						<EncounterBadge count={counts[participant.puuid]} />
 					{/if}
 				</span>
-				{#if !participant.isBot && actions}
-					{@render actions(participant)}
+				{#if !participant.isBot && platform}
+					<a
+						href={resolve('/joueur/[platform]/[riotId]?from=match', {
+							platform,
+							riotId: riotIdSegment(participant)
+						})}
+						aria-label="Voir le profil de {participant.gameName}#{participant.tagLine}"
+						title="Voir le profil"
+						class="rounded px-1 text-zinc-400 hover:bg-zinc-100 hover:text-indigo-700 focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+						>↗</a
+					>
 				{/if}
 				<span class="text-zinc-500 tabular-nums">{formatKda(participant)}</span>
 			</li>

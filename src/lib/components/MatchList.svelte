@@ -1,7 +1,14 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { toApiError } from '#lib/client/api.ts';
-	import type { ApiError, MatchPage, MatchSummary, Participant } from '#lib/shared/types.ts';
+	import type {
+		ApiError,
+		EncounterCounts,
+		MatchPage,
+		MatchSummary,
+		Participant,
+		Puuid
+	} from '#lib/shared/types.ts';
 	import ErrorMessage from './ErrorMessage.svelte';
 	import MatchRow from './MatchRow.svelte';
 
@@ -9,12 +16,16 @@
 		initialPage,
 		loadPage,
 		pageSize = 20,
+		loadCounts,
+		onselect,
 		participantActions
 	}: {
 		initialPage: MatchPage;
 		/** Charge la page qui commence à `start` (index dans l'historique Riot). */
 		loadPage: (start: number) => Promise<MatchPage>;
 		pageSize?: number;
+		loadCounts?: (puuids: Puuid[]) => Promise<EncounterCounts>;
+		onselect?: (participant: Participant) => void;
 		participantActions?: Snippet<[Participant]>;
 	} = $props();
 
@@ -51,7 +62,7 @@
 {:else}
 	<div class="flex flex-col gap-3">
 		{#each matches as match (match.matchId)}
-			<MatchRow {match} {participantActions} />
+			<MatchRow {match} {loadCounts} {onselect} {participantActions} />
 		{/each}
 	</div>
 {/if}

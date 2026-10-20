@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import { botMatchSummary, matchSummary } from '../../../tests/fixtures/app/match-summaries.ts';
 import MatchRow from './MatchRow.svelte';
@@ -36,6 +36,22 @@ describe('MatchRow', () => {
 		expect(screen.getByRole('listitem').elements()).toHaveLength(10);
 		await expect.element(screen.getByText('Équipe bleue')).toBeInTheDocument();
 		await expect.element(screen.getByText('Équipe rouge')).toBeInTheDocument();
+	});
+
+	it('au dépliage, charge les badges 👥 des joueurs humains et signale le clic (US2)', async () => {
+		const loadCounts = vi.fn(async () => ({ 'puuid-Joueur5': 2 }));
+		const onselect = vi.fn();
+		const screen = render(MatchRow, { match: matchSummary(), loadCounts, onselect });
+		await screen.getByRole('button', { name: /participants/i }).click();
+
+		expect(loadCounts).toHaveBeenCalledTimes(1);
+		const requested = (loadCounts.mock.calls[0] as unknown as [string[]])[0];
+		expect(requested).toHaveLength(10);
+		await expect.element(screen.getByLabelText('2 parties ensemble')).toBeInTheDocument();
+		expect(screen.getByText('👥', { exact: false }).elements()).toHaveLength(1);
+
+		await screen.getByRole('button', { name: 'Joueur5#EUW' }).click();
+		expect(onselect).toHaveBeenCalledWith(expect.objectContaining({ puuid: 'puuid-Joueur5' }));
 	});
 
 	it('affiche les bots comme « Bot »', async () => {

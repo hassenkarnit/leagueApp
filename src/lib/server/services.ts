@@ -1,4 +1,6 @@
 // Instances partagées par les routes de l'API (un seul limiteur et un seul cache pour toute l'app).
+import { createAnalyzer } from './analysis/analyzer.ts';
+import { JsonFileAnalysisStore } from './analysis/store.ts';
 import { getRiotApiKey } from './config.ts';
 import { createPlayersService } from './players.ts';
 import { createRiotClient } from './riot/client.ts';
@@ -12,4 +14,8 @@ export const riotClient = createRiotClient({
 
 export const staticData = createStaticData();
 
+export const analysisStore = new JsonFileAnalysisStore();
+
 export const players = createPlayersService({ riot: riotClient, staticData });
+
+export const analyzer = createAnalyzer({ riot: riotClient, store: analysisStore });

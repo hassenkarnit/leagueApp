@@ -2,13 +2,16 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { apiGet } from '#lib/client/api.ts';
+	import { getEncounterCounts, getEncounterSummary } from '#lib/client/endpoints.ts';
+	import { reference } from '#lib/client/reference.svelte.ts';
+	import EncounterPanel from '#lib/components/EncounterPanel.svelte';
 	import ErrorMessage from '#lib/components/ErrorMessage.svelte';
 	import MatchList from '#lib/components/MatchList.svelte';
 	import PlayerHeader from '#lib/components/PlayerHeader.svelte';
 	import SearchForm from '#lib/components/SearchForm.svelte';
 	import { isPlatform } from '#lib/shared/platforms.ts';
 	import { formatRiotId, toUrlSegment } from '#lib/shared/riot-id.ts';
-	import type { MatchPage, Platform, RiotId } from '#lib/shared/types.ts';
+	import type { MatchPage, Participant, Platform, Puuid, RiotId } from '#lib/shared/types.ts';
 	import type { PageProps } from './$types';
 
 	let { data, params }: PageProps = $props();
@@ -25,6 +28,14 @@
 	function loadPage(start: number) {
 		return apiGet<MatchPage>(`${data.apiBase}/matches?start=${start}&count=20`);
 	}
+
+	/** Badges 👥 : seulement si un compte de référence est défini (sinon aucun appel). */
+	async function loadCounts(puuids: Puuid[]) {
+		return reference.current ? getEncounterCounts(reference.current.puuid, puuids) : {};
+	}
+
+	/** Joueur dont on affiche les parties communes (panneau latéral). */
+	let selected = $state<Participant | null>(null);
 </script>
 
 <svelte:head>
@@ -57,8 +68,22 @@
 		<section aria-label="Historique des matchs">
 			<!-- Nouvelle liste à chaque joueur : son état (pages chargées) ne doit pas être réutilisé. -->
 			{#key data.apiBase}
-				<MatchList initialPage={data.firstPage} {loadPage} />
+				<MatchList
+					initialPage={data.firstPage}
+					{loadPage}
+					{loadCounts}
+					onselect={(participant) => (selected = participant)}
+				/>
 			{/key}
 		</section>
 	{/if}
 </div>
+
+{#if selected}
+	<EncounterPanel
+		reference={reference.current}
+		participant={selected}
+		load={getEncounterSummary}
+		onclose={() => (selected = null)}
+	/>
+{/if}

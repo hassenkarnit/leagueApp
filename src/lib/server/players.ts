@@ -1,7 +1,6 @@
 // Profil et historique paginé d'un joueur (User Story 1).
 import { parseUrlSegment } from '#lib/shared/riot-id.ts';
 import type {
-	MatchOutcome,
 	MatchPage,
 	MatchSummary,
 	Participant,
@@ -9,12 +8,12 @@ import type {
 	PlayerProfile,
 	Puuid,
 	RiotId,
-	Team,
-	TeamSide
+	Team
 } from '#lib/shared/types.ts';
 import { TtlCache } from './cache.ts';
 import { errors } from './errors.ts';
 import { MatchUnavailableError, type RiotClient } from './riot/client.ts';
+import { durationSeconds, isBotParticipant, outcomeOf, sideOf } from './riot/match-utils.ts';
 import { regionsFor } from './riot/routing.ts';
 import type { MatchDto, ParticipantDto } from './riot/schemas.ts';
 import type { StaticData } from './static-data.ts';
@@ -38,26 +37,6 @@ export function parseRiotIdParam(segment: string): RiotId {
 export function parsePlatformParam(platform: string): Platform {
 	regionsFor(platform);
 	return platform as Platform;
-}
-
-function sideOf(teamId: number): TeamSide {
-	return teamId === 100 ? 'blue' : 'red';
-}
-
-function outcomeOf(participant: ParticipantDto): MatchOutcome {
-	if (participant.gameEndedInEarlySurrender) return 'remake';
-	return participant.win ? 'win' : 'loss';
-}
-
-export function isBotParticipant(participant: ParticipantDto): boolean {
-	return participant.puuid === 'BOT' || participant.riotIdGameName === '';
-}
-
-/** `gameDuration` est en secondes si `gameEndTimestamp` est présent, sinon en millisecondes. */
-function durationSeconds(info: MatchDto['info']): number {
-	return info.gameEndTimestamp === undefined
-		? Math.round(info.gameDuration / 1000)
-		: info.gameDuration;
 }
 
 export function createPlayersService({ riot, staticData, now = Date.now }: PlayersServiceOptions) {

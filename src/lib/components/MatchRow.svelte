@@ -1,18 +1,35 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { formatDuration, formatKda, formatRelativeDate } from '#lib/shared/format.ts';
-	import type { MatchSummary, Participant } from '#lib/shared/types.ts';
+	import type { EncounterCounts, MatchSummary, Participant, Puuid } from '#lib/shared/types.ts';
 	import TeamTable from './TeamTable.svelte';
 
 	let {
 		match,
 		expanded = $bindable(false),
+		loadCounts,
+		onselect,
 		participantActions
 	}: {
 		match: MatchSummary;
 		expanded?: boolean;
+		/** Badges 👥 : parties communes avec le compte de référence (US2). */
+		loadCounts?: (puuids: Puuid[]) => Promise<EncounterCounts>;
+		onselect?: (participant: Participant) => void;
 		participantActions?: Snippet<[Participant]>;
 	} = $props();
+
+	let counts = $state<EncounterCounts>({});
+
+	// À chaque dépliage, on (re)demande les badges : une analyse a pu se terminer entre-temps.
+	$effect(() => {
+		if (!expanded || !loadCounts) return;
+		const puuids = match.teams.flatMap((t) => t.participants.flatMap((p) => p.puuid ?? []));
+		loadCounts(puuids).then(
+			(result) => (counts = result),
+			() => (counts = {}) // pas d'analyse ou erreur : simplement aucun badge
+		);
+	});
 
 	const OUTCOME_LABELS = { win: 'Victoire', loss: 'Défaite', remake: 'Partie annulée' } as const;
 	const OUTCOME_STYLES = {
@@ -67,7 +84,7 @@
 	{#if expanded}
 		<div id={detailsId} class="flex flex-col gap-4 border-t border-zinc-100 p-3 sm:flex-row">
 			{#each match.teams as team (team.side)}
-				<TeamTable {team} actions={participantActions} />
+				<TeamTable {team} {counts} {onselect} actions={participantActions} />
 			{/each}
 		</div>
 	{/if}

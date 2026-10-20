@@ -1,14 +1,21 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { formatKda } from '#lib/shared/format.ts';
-	import type { Participant, Team } from '#lib/shared/types.ts';
+	import type { EncounterCounts, Participant, Team } from '#lib/shared/types.ts';
+	import EncounterBadge from './EncounterBadge.svelte';
 
 	let {
 		team,
+		counts = {},
+		onselect,
 		actions
 	}: {
 		team: Team;
-		/** Emplacement pour des actions sur un joueur humain (badge, profil…) — US2/US3. */
+		/** Parties communes avec le compte de référence (badges 👥, US2). */
+		counts?: EncounterCounts;
+		/** Clic sur un joueur humain (panneau « parties communes », US2). */
+		onselect?: (participant: Participant) => void;
+		/** Emplacement pour des actions supplémentaires sur un joueur humain (US3). */
 		actions?: Snippet<[Participant]>;
 	} = $props();
 
@@ -20,7 +27,7 @@
 	} as const;
 </script>
 
-<section class="flex-1">
+<section class="min-w-0 flex-1">
 	<h3 class="mb-2 flex items-baseline justify-between text-sm font-medium">
 		<span>{team.side === 'blue' ? 'Équipe bleue' : 'Équipe rouge'}</span>
 		<span class={OUTCOME_COLORS[team.outcome]}>{OUTCOME_LABELS[team.outcome]}</span>
@@ -35,11 +42,21 @@
 					height="24"
 					class="size-6 rounded"
 				/>
-				<span class="min-w-0 flex-1 truncate">
+				<span class="flex min-w-0 flex-1 items-center gap-1.5">
 					{#if participant.isBot}
 						<span class="text-zinc-500">Bot</span>
+					{:else if onselect}
+						<button
+							type="button"
+							onclick={() => onselect(participant)}
+							class="truncate text-left hover:text-indigo-700 hover:underline focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+							>{participant.gameName}#{participant.tagLine}</button
+						>
 					{:else}
-						{participant.gameName}#{participant.tagLine}
+						<span class="truncate">{participant.gameName}#{participant.tagLine}</span>
+					{/if}
+					{#if participant.puuid}
+						<EncounterBadge count={counts[participant.puuid]} />
 					{/if}
 				</span>
 				{#if !participant.isBot && actions}

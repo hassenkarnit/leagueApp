@@ -2,20 +2,36 @@
 .env
 .env.*
 !.env.example
+!.env.test
+
+# Données locales de l'application (analyses : identifiants de joueurs)
+data/
 
 # Réglages Claude Code personnels (les skills partagés dans .claude/skills restent versionnés)
 .claude/settings.local.json
 
-# Dépendances & builds
-node_modules/
+# Dépendances
+node_modules
+
+# Builds & sorties
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
 dist/
-build/
 coverage/
-.venv/
-__pycache__/
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Tests navigateur (captures d'échec Vitest)
+__screenshots__/
 
 # OS / IDE
 .DS_Store
+Thumbs.db
 .idea/
-.vscode/
 *.log

@@ -39,14 +39,14 @@ Riot est toujours simulée (MSW, `onUnhandledFrame: 'error'`).
 
 **Purpose**: Créer le projet SvelteKit dans le dépôt existant sans perdre nos fichiers.
 
-- [ ] T001 Créer le projet dans la racine du dépôt (`README.md` et `.gitignore` sont commités, donc récupérables) avec `npx sv@1.1.1 create . --template minimal --types ts --add tailwindcss="plugins:none" vitest="usages:unit,component" prettier eslint --install npm --no-dir-check` ; vérifier que `.claude/`, `.specify/`, `specs/` sont intacts (`git status`)
-- [ ] T002 Fusionner `.gitignore` : reprendre la version commitée (`git show HEAD:.gitignore`) + les entrées ajoutées par `sv`, et ajouter `data/` ; vérifier que `.env` et `.env.*` sont ignorés et `!.env.example` autorisé, dans `.gitignore`
-- [ ] T003 Fusionner `README.md` : reprendre la version commitée (`git show HEAD:README.md`) et y ajouter une section « Développement » (`npm install`, `npx playwright install chromium`, `cp .env.example .env`, `npm run dev`, `npm run test`, `npm run check`, `npm run lint`) dans `README.md`
-- [ ] T004 Remplacer `@sveltejs/adapter-auto` par `@sveltejs/adapter-node@6.0.0` dans `package.json` et `vite.config.ts` ; figer `typescript` à `6.0.3` (PAS 7) ; vérifier les versions installées : `@sveltejs/kit` 3.1.0, `svelte` 5.57.x, `tailwindcss` 4.3.3, `vitest` 4.1.x
-- [ ] T005 [P] Installer les dépendances : `npm install zod@4` et `npm install -D msw@3`, puis `npx playwright install chromium` ; vérifier que `package-lock.json` est mis à jour
-- [ ] T006 [P] Créer `.env.example` contenant uniquement `RIOT_API_KEY=RGAPI-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` et un commentaire expliquant où obtenir la clé (developer.riotgames.com, expire toutes les 24 h)
-- [ ] T007 Vérifier que `package.json` contient `"imports": { "#lib": "./src/lib/index.ts", "#lib/*": "./src/lib/*" }` (adapter l'extension si `sv` a généré `.js`) et que les projets Vitest `client` et `server` existent dans `vite.config.ts`
-- [ ] T008 Lancer `npm run test`, `npm run check`, `npm run lint` sur le squelette : tout doit passer ; supprimer le test d'exemple généré par `sv` s'il n'a plus de sens ; commit `chore: scaffold SvelteKit 3 + Tailwind 4 + Vitest`
+- [X] T001 Créer le projet dans la racine du dépôt (`README.md` et `.gitignore` sont commités, donc récupérables) avec `npx sv@1.1.1 create . --template minimal --types ts --add tailwindcss="plugins:none" vitest="usages:unit,component" prettier eslint --install npm --no-dir-check` ; vérifier que `.claude/`, `.specify/`, `specs/` sont intacts (`git status`)
+- [X] T002 Fusionner `.gitignore` : reprendre la version commitée (`git show HEAD:.gitignore`) + les entrées ajoutées par `sv`, et ajouter `data/` ; vérifier que `.env` et `.env.*` sont ignorés et `!.env.example` autorisé, dans `.gitignore`
+- [X] T003 Fusionner `README.md` : reprendre la version commitée (`git show HEAD:README.md`) et y ajouter une section « Développement » (`npm install`, `npx playwright install chromium`, `cp .env.example .env`, `npm run dev`, `npm run test`, `npm run check`, `npm run lint`) dans `README.md`
+- [X] T004 Remplacer `@sveltejs/adapter-auto` par `@sveltejs/adapter-node@6.0.0` dans `package.json` et `vite.config.ts` ; figer `typescript` à `6.0.3` (PAS 7) ; vérifier les versions installées : `@sveltejs/kit` 3.1.0, `svelte` 5.57.x, `tailwindcss` 4.3.3, `vitest` 4.1.x
+- [X] T005 [P] Installer les dépendances : `npm install zod@4` et `npm install -D msw@3`, puis `npx playwright install chromium` ; vérifier que `package-lock.json` est mis à jour
+- [X] T006 [P] Créer `.env.example` contenant uniquement `RIOT_API_KEY=RGAPI-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` et un commentaire expliquant où obtenir la clé (developer.riotgames.com, expire toutes les 24 h)
+- [X] T007 Vérifier que `package.json` contient `"imports": { "#lib": "./src/lib/index.ts", "#lib/*": "./src/lib/*" }` (adapter l'extension si `sv` a généré `.js`) et que les projets Vitest `client` et `server` existent dans `vite.config.ts`
+- [X] T008 Lancer `npm run test`, `npm run check`, `npm run lint` sur le squelette : tout doit passer ; supprimer le test d'exemple généré par `sv` s'il n'a plus de sens ; commit `chore: scaffold SvelteKit 3 + Tailwind 4 + Vitest`
 
 ---
 

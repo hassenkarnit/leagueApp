@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
 	TIER_LABELS,
+	averageRank,
 	emblemUrl,
 	formatRank,
-	formatRecord,
+	positionFromIndex,
+	rankIndex,
 	winRate,
 	winRateColor
 } from './ranked.ts';
@@ -31,12 +33,6 @@ describe('formatRank', () => {
 		expect(formatRank({ tier, division: null, leaguePoints: 2256 })).toBe(
 			`${TIER_LABELS[tier]} · 2256 LP`
 		);
-	});
-});
-
-describe('formatRecord', () => {
-	it('affiche « 54 % · 120 V / 102 D »', () => {
-		expect(formatRecord({ wins: 120, losses: 102, winRate: 54 })).toBe('54 % · 120 V / 102 D');
 	});
 });
 
@@ -107,5 +103,104 @@ describe('winRateColor', () => {
 		const hues = [45, 46, 47, 48, 49, 50, 51, 52].map((pct) => hue(winRateColor(pct, 100 - pct)));
 		expect(hues).toEqual([...hues].sort((a, b) => a - b));
 		expect(new Set(hues).size).toBe(hues.length);
+	});
+});
+
+describe('rankIndex / positionFromIndex', () => {
+	it.each([
+		['IRON', 'IV', 0],
+		['EMERALD', 'IV', 20],
+		['EMERALD', 'I', 23],
+		['DIAMOND', 'I', 27],
+		['MASTER', null, 28],
+		['GRANDMASTER', null, 29],
+		['CHALLENGER', null, 30]
+	])('%s %s → %i', (tier, division, index) => {
+		expect(rankIndex({ tier, division })).toBe(index);
+		expect(positionFromIndex(index)).toEqual({ tier, division });
+	});
+
+	it('refuse un palier inconnu avec un message explicite', () => {
+		expect(() => rankIndex({ tier: 'WOOD', division: 'I' })).toThrow(/WOOD/);
+	});
+});
+
+function ranked(tier: string, division: string | null, leaguePoints = 0) {
+	return {
+		status: 'ranked' as const,
+		tier,
+		tierLabel: TIER_LABELS[tier] ?? tier,
+		division,
+		leaguePoints,
+		wins: 10,
+		losses: 10,
+		winRate: 50
+	};
+}
+
+describe('averageRank', () => {
+	it('2 Émeraude IV + 3 Émeraude I → Émeraude II (exemple de référence)', () => {
+		const stats = [
+			ranked('EMERALD', 'IV'),
+			ranked('EMERALD', 'IV'),
+			ranked('EMERALD', 'I'),
+			ranked('EMERALD', 'I'),
+			ranked('EMERALD', 'I')
+		];
+		expect(averageRank(stats, 5)).toEqual({
+			status: 'average',
+			tier: 'EMERALD',
+			tierLabel: 'Émeraude',
+			division: 'II',
+			counted: 5,
+			teamSize: 5
+		});
+	});
+
+	it('5 joueurs du même rang → ce rang', () => {
+		const result = averageRank(Array(5).fill(ranked('GOLD', 'III')), 5);
+		expect(result).toMatchObject({ tier: 'GOLD', division: 'III' });
+	});
+
+	it('arrondit 0,5 vers le haut (Or IV + Or III → Or III)', () => {
+		const result = averageRank([ranked('GOLD', 'IV'), ranked('GOLD', 'III')], 2);
+		expect(result).toMatchObject({ tier: 'GOLD', division: 'III' });
+	});
+
+	it('gère les paliers sans division : Diamant I, Maître, Grand Maître → Maître', () => {
+		const result = averageRank(
+			[ranked('DIAMOND', 'I'), ranked('MASTER', null), ranked('GRANDMASTER', null)],
+			3
+		);
+		expect(result).toMatchObject({ tier: 'MASTER', tierLabel: 'Maître', division: null });
+	});
+
+	it('ignore les non classés, masqués et indisponibles et indique combien sont comptés', () => {
+		const result = averageRank(
+			[
+				ranked('SILVER', 'II'),
+				ranked('SILVER', 'II'),
+				ranked('SILVER', 'II'),
+				{ status: 'unranked' },
+				{ status: 'unavailable' }
+			],
+			5
+		);
+		expect(result).toMatchObject({ tier: 'SILVER', division: 'II', counted: 3, teamSize: 5 });
+	});
+
+	it('ignore un palier inconnu sans planter', () => {
+		const result = averageRank([ranked('GOLD', 'I'), ranked('WOOD', 'I')], 2);
+		expect(result).toMatchObject({ tier: 'GOLD', division: 'I', counted: 1 });
+	});
+
+	it('est indisponible sans aucun joueur classé', () => {
+		expect(averageRank([{ status: 'unranked' }], 5)).toEqual({ status: 'unavailable' });
+		expect(averageRank([], 5)).toEqual({ status: 'unavailable' });
+	});
+
+	it('ignore les LP', () => {
+		const a = averageRank([ranked('GOLD', 'II', 0), ranked('GOLD', 'II', 99)], 2);
+		expect(a).toMatchObject({ tier: 'GOLD', division: 'II' });
 	});
 });

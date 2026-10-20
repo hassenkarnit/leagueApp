@@ -89,14 +89,14 @@ Aucune tâche bloquante : les fonctions pures sont rattachées aux user stories 
 
 ### Tests (écrire d'abord)
 
-- [ ] T013 [P] [US3] Tests unitaires de `rankIndex` / `positionFromIndex` dans `src/lib/shared/ranked.test.ts` : Fer IV = 0, Émeraude IV = 20, Émeraude I = 23, Diamant I = 27, Maître = 28, Grand Maître = 29, Challenger = 30 ; aller-retour `positionFromIndex(rankIndex(x))` ; palier inconnu → erreur explicite
-- [ ] T014 [P] [US3] Tests unitaires de `averageRank(stats, teamSize)` dans `src/lib/shared/ranked.test.ts` : 2 × Émeraude IV + 3 × Émeraude I → Émeraude II (`counted: 5`) ; 5 × Or III → Or III ; Or IV + Or III → Or III (0,5 ↑) ; mix Diamant I + Maître + Grand Maître → apex sans division (libellés `TIER_LABELS` : « Maître », « Grand Maître ») ; un palier inconnu est ignoré comme un non-classé, sans erreur ; 3 `ranked` + 1 `unranked` + 1 `unavailable` → `counted: 3`, `teamSize: 5` ; aucun classé → `{ status: 'unavailable' }` ; les LP n'influencent pas
-- [ ] T015 [US3] Tests dans `src/lib/components/LiveGameCard.svelte.test.ts` : l'en-tête de chaque équipe affiche « Rang moyen » + « Émeraude II » + emblème pour l'exemple de référence ; « (3/5 joueurs classés) » quand incomplet ; « Rang moyen indisponible » sans emblème si aucun classé ; « calcul… » quand `stats === null` ; rien quand `stats` est absent ; mise à jour quand `stats` passe de `null` à une valeur (FR-012)
+- [X] T013 [P] [US3] Tests unitaires de `rankIndex` / `positionFromIndex` dans `src/lib/shared/ranked.test.ts` : Fer IV = 0, Émeraude IV = 20, Émeraude I = 23, Diamant I = 27, Maître = 28, Grand Maître = 29, Challenger = 30 ; aller-retour `positionFromIndex(rankIndex(x))` ; palier inconnu → erreur explicite
+- [X] T014 [P] [US3] Tests unitaires de `averageRank(stats, teamSize)` dans `src/lib/shared/ranked.test.ts` : 2 × Émeraude IV + 3 × Émeraude I → Émeraude II (`counted: 5`) ; 5 × Or III → Or III ; Or IV + Or III → Or III (0,5 ↑) ; mix Diamant I + Maître + Grand Maître → apex sans division (libellés `TIER_LABELS` : « Maître », « Grand Maître ») ; un palier inconnu est ignoré comme un non-classé, sans erreur ; 3 `ranked` + 1 `unranked` + 1 `unavailable` → `counted: 3`, `teamSize: 5` ; aucun classé → `{ status: 'unavailable' }` ; les LP n'influencent pas
+- [X] T015 [US3] Tests dans `src/lib/components/LiveGameCard.svelte.test.ts` : l'en-tête de chaque équipe affiche « Rang moyen » + « Émeraude II » + emblème pour l'exemple de référence ; « (3/5 joueurs classés) » quand incomplet ; « Rang moyen indisponible » sans emblème si aucun classé ; « calcul… » quand `stats === null` ; rien quand `stats` est absent ; mise à jour quand `stats` passe de `null` à une valeur (FR-012)
 
 ### Implementation
 
-- [ ] T016 [US3] Ajouter dans `src/lib/shared/ranked.ts` les types `RankPosition`, `TeamAverageRank` et les fonctions `rankIndex`, `positionFromIndex` (T013 passe) puis `averageRank` (ignore tout joueur dont le palier est inconnu au lieu de planter ; arrondi `Math.floor(somme / n + 0.5)`, libellé via `TIER_LABELS`) (T014 passe)
-- [ ] T017 [US3] Modifier `src/lib/components/LiveTeamColumn.svelte` : `$derived` du rang moyen d'après `stats` et `team.participants`, bloc « Rang moyen : [emblème] Émeraude II (N/5 joueurs classés) » sous le titre d'équipe, états chargement / indisponible selon `contracts/ui.md` (T015 passe)
+- [X] T016 [US3] Ajouter dans `src/lib/shared/ranked.ts` les types `RankPosition`, `TeamAverageRank` et les fonctions `rankIndex`, `positionFromIndex` (T013 passe) puis `averageRank` (ignore tout joueur dont le palier est inconnu au lieu de planter ; arrondi `Math.floor(somme / n + 0.5)`, libellé via `TIER_LABELS`) (T014 passe)
+- [X] T017 [US3] Modifier `src/lib/components/LiveTeamColumn.svelte` : `$derived` du rang moyen d'après `stats` et `team.participants`, bloc « Rang moyen : [emblème] Émeraude II (N/5 joueurs classés) » sous le titre d'équipe, états chargement / indisponible selon `contracts/ui.md` (T015 passe)
 
 **Checkpoint**: les trois stories fonctionnent ensemble.
 
@@ -104,11 +104,11 @@ Aucune tâche bloquante : les fonctions pures sont rattachées aux user stories 
 
 ## Phase 6: Polish & Cross-Cutting
 
-- [ ] T018 Vérifier la régression de la feature 002 : tous les tests existants (`LiveGameCard`, `LiveGameSection`, `live-game`) restent verts sans modification d'API ; aucun nouvel appel réseau (SC-005)
-- [ ] T019 [P] Accessibilité (pas de mode sombre dans l'app ; vérifier aussi l'écran étroit) : contraste du pourcentage sur fond blanc et sur la ligne mise en évidence (`bg-indigo-50`) ; le pourcentage reste écrit ; emblèmes avec `alt`
-- [ ] T020 Quality gate : `npm run test`, `npm run check`, `npm run lint` au vert
+- [X] T018 Vérifier la régression de la feature 002 : tous les tests existants (`LiveGameCard`, `LiveGameSection`, `live-game`) restent verts sans modification d'API ; aucun nouvel appel réseau (SC-005)
+- [X] T019 [P] Accessibilité (pas de mode sombre dans l'app ; vérifier aussi l'écran étroit) : contraste du pourcentage sur fond blanc et sur la ligne mise en évidence (`bg-indigo-50`) ; le pourcentage reste écrit ; emblèmes avec `alt`
+- [X] T020 Quality gate : `npm run test`, `npm run check`, `npm run lint` au vert
 - [ ] T021 Exécuter `quickstart.md` en réel (scénarios 1 à 7) avec une clé Riot valide, si un joueur est en partie classée ; sinon valider via les tests et le consigner dans la PR
-- [ ] T022 Mettre à jour `CLAUDE.md` : « Features livrées » (ajouter `003-rangs-logos-winrate-moyenne`) et, si utile, l'emplacement `static/ranks/`
+- [X] T022 Mettre à jour `CLAUDE.md` : « Features livrées » (ajouter `003-rangs-logos-winrate-moyenne`) et, si utile, l'emplacement `static/ranks/`
 
 ---
 

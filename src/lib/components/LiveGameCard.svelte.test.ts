@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import { hiddenParticipant, liveGame } from '../../../tests/fixtures/app/live-game.ts';
 import { winRateColor } from '#lib/shared/ranked.ts';
+import type { RankedStatsMap } from '#lib/shared/types.ts';
 import LiveGameCard from './LiveGameCard.svelte';
 
 const START = Date.parse('2026-10-20T12:00:00.000Z');
@@ -220,5 +221,90 @@ describe('LiveGameCard (joueur masqué par Riot, FR-006a)', () => {
 		expect(screen.getByRole('link').elements()).toHaveLength(9);
 		expect(screen.getByRole('button').elements()).toHaveLength(9);
 		expect(screen.getByText('Statistiques indisponibles').elements()).toHaveLength(9);
+	});
+});
+
+describe('LiveGameCard (US3 : rang moyen par équipe)', () => {
+	const rankedStats = (tier: string, tierLabel: string, division: string | null) => ({
+		status: 'ranked' as const,
+		tier,
+		tierLabel,
+		division,
+		leaguePoints: 10,
+		wins: 10,
+		losses: 10,
+		winRate: 50
+	});
+	const render3 = (stats: RankedStatsMap | null) =>
+		render(LiveGameCard, {
+			game: liveGame(),
+			platform: 'euw1',
+			highlightPuuid: 'puuid-Moi',
+			stats,
+			now: () => START
+		});
+	const blue = ['Moi', 'Ami', 'Allié1', 'Allié2', 'Allié3'].map((n) => `puuid-${n}`);
+
+	it('affiche « Émeraude II » et son emblème pour 2 × IV + 3 × I', async () => {
+		const stats = Object.fromEntries(
+			blue.map((puuid, i) => [puuid, rankedStats('EMERALD', 'Émeraude', i < 2 ? 'IV' : 'I')])
+		);
+		const screen = render3(stats);
+		const header = screen.container.querySelector('[data-team-average="blue"]') as HTMLElement;
+		expect(header.textContent).toContain('Rang moyen');
+		expect(header.textContent).toContain('Émeraude II');
+		expect(header.querySelector('img[alt="Émeraude"]')).not.toBeNull();
+		expect(header.textContent).not.toContain('joueurs classés');
+	});
+
+	it('indique « 3/5 joueurs classés » quand des joueurs ne sont pas classés', async () => {
+		const stats = {
+			[blue[0]]: rankedStats('GOLD', 'Or', 'II'),
+			[blue[1]]: rankedStats('GOLD', 'Or', 'II'),
+			[blue[2]]: rankedStats('GOLD', 'Or', 'II'),
+			[blue[3]]: { status: 'unranked' as const }
+		};
+		const screen = render3(stats);
+		const header = screen.container.querySelector('[data-team-average="blue"]') as HTMLElement;
+		expect(header.textContent).toContain('Or II');
+		expect(header.textContent).toContain('3/5 joueurs classés');
+	});
+
+	it('indique « Rang moyen indisponible » sans emblème si personne n’est classé', async () => {
+		const screen = render3({});
+		const header = screen.container.querySelector('[data-team-average="red"]') as HTMLElement;
+		expect(header.textContent).toContain('Rang moyen indisponible');
+		expect(header.querySelector('img')).toBeNull();
+	});
+
+	it('indique « calcul… » pendant le chargement et rien si les stats ne sont pas demandées', async () => {
+		const loading = render3(null);
+		expect(loading.container.querySelector('[data-team-average="blue"]')?.textContent).toContain(
+			'calcul…'
+		);
+		loading.unmount();
+		const absent = render(LiveGameCard, {
+			game: liveGame(),
+			platform: 'euw1',
+			highlightPuuid: 'puuid-Moi',
+			now: () => START
+		});
+		expect(absent.container.querySelector('[data-team-average]')).toBeNull();
+	});
+
+	it('se met à jour quand les statistiques arrivent', async () => {
+		const screen = render(LiveGameCard, {
+			game: liveGame(),
+			platform: 'euw1',
+			highlightPuuid: 'puuid-Moi',
+			stats: null,
+			now: () => START
+		});
+		const header = () => screen.container.querySelector('[data-team-average="blue"]')?.textContent;
+		expect(header()).toContain('calcul…');
+		await screen.rerender({
+			stats: Object.fromEntries(blue.map((p) => [p, rankedStats('IRON', 'Fer', 'IV')]))
+		});
+		await expect.poll(header).toContain('Fer IV');
 	});
 });

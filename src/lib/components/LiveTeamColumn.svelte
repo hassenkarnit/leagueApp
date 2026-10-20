@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { formatRank, winRateColor } from '#lib/shared/ranked.ts';
+	import { averageRank, formatRank, winRateColor } from '#lib/shared/ranked.ts';
 	import { toUrlSegment } from '#lib/shared/riot-id.ts';
 	import type {
 		EncounterCounts,
@@ -35,12 +35,42 @@
 		/** Clic sur un joueur → panneau « parties communes » (FR-010). */
 		onselect?: (participant: LiveParticipant) => void;
 	} = $props();
+
+	// Rang moyen (US3) : se recalcule tout seul quand les statistiques arrivent (FR-012).
+	const average = $derived(
+		stats
+			? averageRank(
+					team.participants.flatMap((p) =>
+						p.puuid !== null && stats[p.puuid] ? [stats[p.puuid]] : []
+					),
+					team.participants.length
+				)
+			: null
+	);
 </script>
 
 <section class="min-w-0 flex-1">
 	<h3 class="mb-2 text-sm font-medium {team.side === 'blue' ? 'text-sky-700' : 'text-rose-700'}">
 		{team.side === 'blue' ? 'Équipe bleue' : 'Équipe rouge'}
 	</h3>
+	{#if stats !== undefined}
+		<p data-team-average={team.side} class="mb-2 flex items-center gap-2 text-xs text-zinc-700">
+			<span>Rang moyen :</span>
+			{#if average === null}
+				<span class="text-zinc-500">calcul…</span>
+			{:else if average.status === 'unavailable'}
+				<span class="text-zinc-500">Rang moyen indisponible</span>
+			{:else}
+				<RankEmblem tier={average.tier} label={average.tierLabel} size={24} />
+				<span class="font-medium text-zinc-900"
+					>{average.division ? `${average.tierLabel} ${average.division}` : average.tierLabel}</span
+				>
+				{#if average.counted < average.teamSize}
+					<span class="text-zinc-500">({average.counted}/{average.teamSize} joueurs classés)</span>
+				{/if}
+			{/if}
+		</p>
+	{/if}
 	<ul class="divide-y divide-zinc-100 rounded-md border border-zinc-200 bg-white">
 		{#each team.participants as participant, index (participant.puuid ?? `masque-${index}`)}
 			{@const highlighted = participant.puuid !== null && participant.puuid === highlightPuuid}

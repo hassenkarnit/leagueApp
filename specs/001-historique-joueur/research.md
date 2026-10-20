@@ -123,6 +123,9 @@ Faits vérifiés le 2026-10-20 (npm registry, svelte.dev, developer.riotgames.co
   `Retry-After` : pause de tout l'hôte ; sans en-tête : pause 1 s puis 1 nouvel essai.
   **Deux niveaux de priorité** : `interactive` (recherche, historique) passe avant `background`
   (analyse des 100 parties).
+  Les **fenêtres par méthode** (endpoint) sont créées dynamiquement à partir de
+  `X-Method-Rate-Limit` / `X-Method-Rate-Limit-Count` : une requête attend si la limite de
+  l'application OU celle de sa méthode est atteinte (principe II : respect de tous les en-têtes).
 - **Justification** : sans priorité, une recherche lancée pendant l'analyse attendrait jusqu'à
   2 min (violerait SC-001). Deux files suffisent, pas besoin de bibliothèque.
 - **Alternatives** : bibliothèque (`bottleneck`, `p-queue`) — rejetée : ne connaît pas les en-têtes

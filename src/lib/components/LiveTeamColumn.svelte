@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { formatRank, formatRecord } from '#lib/shared/ranked.ts';
+	import { formatRank, winRateColor } from '#lib/shared/ranked.ts';
 	import { toUrlSegment } from '#lib/shared/riot-id.ts';
 	import type {
 		EncounterCounts,
@@ -112,7 +112,14 @@
 								<p class="text-zinc-500">Chargement du classement…</p>
 							{:else if playerStats?.status === 'ranked'}
 								<p class="font-medium text-zinc-800">{formatRank(playerStats)}</p>
-								<p class="text-zinc-600 tabular-nums">{formatRecord(playerStats)}</p>
+								<p class="text-zinc-600 tabular-nums">
+									<span
+										data-winrate
+										class="font-medium"
+										style:color={winRateColor(playerStats.wins, playerStats.losses)}
+										>{playerStats.winRate} %</span
+									>{` · ${playerStats.wins} V / ${playerStats.losses} D`}
+								</p>
 							{:else if playerStats?.status === 'unranked'}
 								<p class="text-zinc-600">Non classé</p>
 							{:else}

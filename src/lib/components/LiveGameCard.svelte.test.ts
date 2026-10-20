@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import { hiddenParticipant, liveGame } from '../../../tests/fixtures/app/live-game.ts';
+import { winRateColor } from '#lib/shared/ranked.ts';
 import LiveGameCard from './LiveGameCard.svelte';
 
 const START = Date.parse('2026-10-20T12:00:00.000Z');
@@ -165,6 +166,27 @@ describe('LiveGameCard (US3 : niveau Solo/Duo)', () => {
 		expect(
 			row('puuid-Adv1').querySelector('img[src^="/ranks/"], [aria-label="Sans rang"]')
 		).toBeNull();
+	});
+
+	it('colore le pourcentage selon le winrate, sans toucher au reste du texte (US2)', async () => {
+		const screen = render(LiveGameCard, {
+			game: liveGame(),
+			platform: 'euw1',
+			highlightPuuid: 'puuid-Moi',
+			stats,
+			now: () => START
+		});
+		const row = (puuid: string) =>
+			screen.container.querySelector(`[data-puuid="${puuid}"]`) as HTMLElement;
+		const percent = row('puuid-Moi').querySelector('[data-winrate]') as HTMLElement;
+		expect(percent.textContent).toBe('54 %');
+		const probe = document.createElement('span');
+		probe.style.color = winRateColor(120, 102); // le navigateur normalise la couleur
+		expect(percent.style.color).not.toBe('');
+		expect(percent.style.color).toBe(probe.style.color);
+		expect(row('puuid-Moi').textContent).toContain('54 % · 120 V / 102 D');
+		expect(row('puuid-Ami').querySelector('[data-winrate]')).toBeNull();
+		expect(row('puuid-Adv1').querySelector('[data-winrate]')).toBeNull();
 	});
 
 	it('indique le chargement tant que les statistiques ne sont pas arrivées', async () => {

@@ -69,13 +69,13 @@ Aucune tâche bloquante : les fonctions pures sont rattachées aux user stories 
 
 ### Tests (écrire d'abord)
 
-- [ ] T009 [P] [US2] Tests unitaires de `winRateColor(wins, losses)` dans `src/lib/shared/ranked.test.ts` (research R3, pourcentage **exact**) : ≤ 45 % (ex. 30 %, 45 %) → même couleur `hsl(0 …)` ; 50 % → teinte 48 ; ≥ 52 % (52 %, 60 %) → teinte 130 ; 47 % a une teinte < 49 % ; 51 % a une teinte > 50,5 % ; la teinte est monotone croissante de 45 % à 52 % ; 108 V / 108 D → 50 %
-- [ ] T010 [US2] Tests dans `src/lib/components/LiveGameCard.svelte.test.ts` : le « 54 % » d'un joueur classé a un `style` couleur non vide égal à `winRateColor` ; le texte « 54 % · 120 V / 102 D » reste intact ; un joueur `unranked` / `unavailable` n'a aucune couleur de winrate (FR-007)
+- [X] T009 [P] [US2] Tests unitaires de `winRateColor(wins, losses)` dans `src/lib/shared/ranked.test.ts` (research R3, pourcentage **exact**) : ≤ 45 % (ex. 30 %, 45 %) → même couleur `hsl(0 …)` ; 50 % → teinte 48 ; ≥ 52 % (52 %, 60 %) → teinte 130 ; 47 % a une teinte < 49 % ; 51 % a une teinte > 50,5 % ; la teinte est monotone croissante de 45 % à 52 % ; 108 V / 108 D → 50 %
+- [X] T010 [US2] Tests dans `src/lib/components/LiveGameCard.svelte.test.ts` : le « 54 % » d'un joueur classé a un `style` couleur non vide égal à `winRateColor` ; le texte « 54 % · 120 V / 102 D » reste intact ; un joueur `unranked` / `unavailable` n'a aucune couleur de winrate (FR-007)
 
 ### Implementation
 
-- [ ] T011 [US2] Ajouter `winRateColor(wins, losses): string` dans `src/lib/shared/ranked.ts` : teinte HSL interpolée (0 → 48 sur 45–50 %, 48 → 130 sur 50–52 %, bornée), saturation 85 %, luminosité 36 % (T009 passe)
-- [ ] T012 [US2] Modifier `src/lib/components/LiveTeamColumn.svelte` : isoler le pourcentage dans un `<span style="color: …">` appliquant `winRateColor` (T010 passe) ; `formatRecord` reste inchangé ou est scindé pour garder « · V / D » en couleur neutre
+- [X] T011 [US2] Ajouter `winRateColor(wins, losses): string` dans `src/lib/shared/ranked.ts` : teinte HSL interpolée (0 → 48 sur 45–50 %, 48 → 130 sur 50–52 %, bornée), saturation 85 %, luminosité 36 % (T009 passe)
+- [X] T012 [US2] Modifier `src/lib/components/LiveTeamColumn.svelte` : isoler le pourcentage dans un `<span style="color: …">` appliquant `winRateColor` (T010 passe) ; `formatRecord` reste inchangé ou est scindé pour garder « · V / D » en couleur neutre
 
 **Checkpoint**: US2 livrable seule (indépendante d'US1).
 

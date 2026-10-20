@@ -52,3 +52,21 @@ export function formatRecord({
 export function emblemUrl(tier: string | null): string | null {
 	return tier !== null && tier in TIER_LABELS ? `/ranks/${tier.toLowerCase()}.png` : null;
 }
+
+const HUE_RED = 0;
+const HUE_YELLOW = 48;
+const HUE_GREEN = 130;
+/** Rouge franc à 45 % et moins, jaune à 50 %, vert franc à 52 % et plus (feature 003, R3). */
+const RED_AT = 45;
+const YELLOW_AT = 50;
+const GREEN_AT = 52;
+
+/** Couleur CSS du pourcentage de victoires exact (non arrondi), rouge → jaune → vert. */
+export function winRateColor(wins: number, losses: number): string {
+	const percent = Math.min(GREEN_AT, Math.max(RED_AT, (wins / (wins + losses)) * 100));
+	const hue =
+		percent <= YELLOW_AT
+			? HUE_RED + ((HUE_YELLOW - HUE_RED) * (percent - RED_AT)) / (YELLOW_AT - RED_AT)
+			: HUE_YELLOW + ((HUE_GREEN - HUE_YELLOW) * (percent - YELLOW_AT)) / (GREEN_AT - YELLOW_AT);
+	return `hsl(${Math.round(hue * 10) / 10} 85% 36%)`;
+}

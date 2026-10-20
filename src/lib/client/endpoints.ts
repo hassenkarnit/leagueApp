@@ -4,9 +4,11 @@ import type {
 	AnalysisStatus,
 	EncounterCounts,
 	EncounterSummary,
+	LiveGameResult,
 	Platform,
 	PlayerProfile,
 	Puuid,
+	RankedStatsMap,
 	RiotId
 } from '#lib/shared/types.ts';
 import { apiGet, apiPost } from './api.ts';
@@ -41,4 +43,17 @@ export function getEncounterSummary(
 	otherPuuid: Puuid
 ): Promise<EncounterSummary> {
 	return apiGet(`/api/reference/${enc(referencePuuid)}/encounters/${enc(otherPuuid)}`);
+}
+
+/** Partie en cours (feature 002). `apiBase` = « /api/players/{platform}/{riotId} ». */
+export function getLiveGame(apiBase: string): Promise<LiveGameResult> {
+	return apiGet(`${apiBase}/live-game`);
+}
+
+/** Rang et % de victoires Solo/Duo de plusieurs joueurs (feature 002). */
+export async function getRankedStats(platform: Platform, puuids: Puuid[]): Promise<RankedStatsMap> {
+	const { stats } = await apiGet<{ stats: RankedStatsMap }>(
+		`/api/ranked/${enc(platform)}?puuids=${puuids.map(enc).join(',')}`
+	);
+	return stats;
 }

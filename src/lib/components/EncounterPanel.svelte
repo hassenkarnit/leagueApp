@@ -6,7 +6,7 @@
 		EncounterGame,
 		EncounterStats,
 		EncounterSummary,
-		Participant,
+		PlayerRef,
 		Puuid,
 		ReferenceAccount
 	} from '#lib/shared/types.ts';
@@ -20,7 +20,7 @@
 		now = Date.now
 	}: {
 		reference: ReferenceAccount | null;
-		participant: Participant;
+		participant: PlayerRef;
 		load: (referencePuuid: Puuid, otherPuuid: Puuid) => Promise<EncounterSummary>;
 		onclose: () => void;
 		now?: () => number;

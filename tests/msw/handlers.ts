@@ -2,7 +2,11 @@
 import { http, HttpResponse, type JsonBodyType } from 'msw';
 import accountFriend from '../fixtures/riot/account-friend.json';
 import accountReference from '../fixtures/riot/account-reference.json';
+import activeGameRanked from '../fixtures/riot/active-game-ranked.json';
+import champions from '../fixtures/riot/champion.json';
 import ddragonVersions from '../fixtures/riot/ddragon-versions.json';
+import leagueEntriesFlexOnly from '../fixtures/riot/league-entries-flex-only.json';
+import leagueEntriesRanked from '../fixtures/riot/league-entries-ranked.json';
 import matchCoopBots from '../fixtures/riot/match-coop-bots.json';
 import matchIds from '../fixtures/riot/match-ids.json';
 import matchRankedLoss from '../fixtures/riot/match-ranked-loss.json';
@@ -17,11 +21,15 @@ export const RIOT_PATHS = {
 	accountByRiotId: `${RIOT_HOST}/riot/account/v1/accounts/by-riot-id/:gameName/:tagLine`,
 	summonerByPuuid: `${RIOT_HOST}/lol/summoner/v4/summoners/by-puuid/:puuid`,
 	matchIds: `${RIOT_HOST}/lol/match/v5/matches/by-puuid/:puuid/ids`,
-	match: `${RIOT_HOST}/lol/match/v5/matches/:matchId`
+	match: `${RIOT_HOST}/lol/match/v5/matches/:matchId`,
+	activeGame: `${RIOT_HOST}/lol/spectator/v5/active-games/by-summoner/:puuid`,
+	leagueEntries: `${RIOT_HOST}/lol/league/v4/entries/by-puuid/:puuid`
 } as const;
 
 export const DDRAGON_VERSIONS_URL = 'https://ddragon.leagueoflegends.com/api/versions.json';
 export const QUEUES_URL = 'https://static.developer.riotgames.com/docs/lol/queues.json';
+export const CHAMPIONS_URL =
+	'https://ddragon.leagueoflegends.com/cdn/:version/data/en_US/champion.json';
 
 export const fixtures = {
 	accounts: [accountReference, accountFriend],
@@ -78,7 +86,24 @@ export const handlers = [
 		return match ? riotJson(request, match) : riotNotFound(request);
 	}),
 
+	// Partie en cours : seul « puuid-reference » joue ; 404 au format propre à spectator sinon.
+	http.get(RIOT_PATHS.activeGame, ({ request, params }) => {
+		if (params.puuid === 'puuid-reference') return riotJson(request, activeGameRanked);
+		recordedRiotRequests.push(request);
+		return HttpResponse.json(
+			{ httpStatus: 404, errorCode: 'NOT_FOUND', message: 'Not Found' },
+			{ status: 404 }
+		);
+	}),
+
+	http.get(RIOT_PATHS.leagueEntries, ({ request, params }) => {
+		if (params.puuid === 'puuid-reference') return riotJson(request, leagueEntriesRanked);
+		if (params.puuid === 'puuid-friend') return riotJson(request, leagueEntriesFlexOnly);
+		return riotJson(request, []);
+	}),
+
 	http.get(DDRAGON_VERSIONS_URL, () => HttpResponse.json(ddragonVersions)),
+	http.get(CHAMPIONS_URL, () => HttpResponse.json(champions)),
 	http.get(QUEUES_URL, () => HttpResponse.json(queues))
 ];
 

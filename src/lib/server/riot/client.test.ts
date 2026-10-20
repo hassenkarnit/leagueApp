@@ -174,3 +174,33 @@ describe('client Riot : erreurs', () => {
 		expect((err as AppError).code).toBe('RIOT_UNAVAILABLE');
 	});
 });
+
+describe('client Riot : partie en cours et classement (feature 002)', () => {
+	it('getActiveGame renvoie la partie, sur l’hôte plateforme', async () => {
+		const { client } = setup();
+		const game = await client.getActiveGame('puuid-reference', 'euw1');
+		expect(game?.gameQueueConfigId).toBe(420);
+		expect(game?.participants).toHaveLength(10);
+		expect(new URL(recordedRiotRequests[0].url).host).toBe('euw1.api.riotgames.com');
+	});
+
+	it('getActiveGame renvoie null hors partie (404 n’est pas une erreur)', async () => {
+		const { client, logger } = setup();
+		expect(await client.getActiveGame('puuid-hors-partie', 'euw1')).toBeNull();
+		expect(logger.warn).not.toHaveBeenCalled();
+	});
+
+	it('getActiveGame : 401 → RIOT_API_KEY_INVALID', async () => {
+		server.use(http.get(RIOT_PATHS.activeGame, () => riotError(401)));
+		const { client } = setup();
+		const err = await captureError(client.getActiveGame('puuid-reference', 'euw1'));
+		expect((err as AppError).code).toBe('RIOT_API_KEY_INVALID');
+	});
+
+	it('getLeagueEntries renvoie les entrées classées, sur l’hôte plateforme', async () => {
+		const { client } = setup();
+		const entries = await client.getLeagueEntries('puuid-reference', 'kr');
+		expect(entries.map((e) => e.queueType)).toEqual(['RANKED_SOLO_5x5', 'RANKED_FLEX_SR']);
+		expect(new URL(recordedRiotRequests[0].url).host).toBe('kr.api.riotgames.com');
+	});
+});

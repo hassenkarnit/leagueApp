@@ -109,6 +109,11 @@ export function createPlayersService({ riot, staticData, now = Date.now }: Playe
 	}
 
 	return {
+		/** PUUID d'un Riot ID (compte en cache 1 h) — utilisé par la partie en cours (002). */
+		async getPuuid(platformParam: string, riotId: RiotId): Promise<Puuid> {
+			return (await getAccount(parsePlatformParam(platformParam), riotId)).puuid;
+		},
+
 		async getProfile(platformParam: string, riotId: RiotId): Promise<PlayerProfile> {
 			const platform = parsePlatformParam(platformParam);
 			const account = await getAccount(platform, riotId);

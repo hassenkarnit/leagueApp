@@ -150,3 +150,60 @@ export interface ApiError {
 	message: string;
 	retryAfterSeconds?: number;
 }
+
+// --- Feature 002 : partie en cours (specs/002-live-game-card/data-model.md) ---
+
+/** Joueur minimal, suffisant pour le panneau « parties communes ». */
+export interface PlayerRef {
+	puuid: Puuid | null;
+	gameName: string | null;
+	tagLine: string | null;
+}
+
+export interface LiveParticipant {
+	/** `null` si Riot masque l'identité du joueur (FR-006a). */
+	puuid: Puuid | null;
+	isHidden: boolean;
+	/** `''` si le joueur est masqué. */
+	gameName: string;
+	tagLine: string;
+	championName: string;
+	/** `null` si le champion est inconnu de Data Dragon. */
+	championIconUrl: string | null;
+	side: TeamSide;
+}
+
+export interface LiveTeam {
+	side: TeamSide;
+	participants: LiveParticipant[];
+}
+
+export interface LiveGame {
+	gameId: number;
+	queueLabel: string;
+	/** ISO 8601 ; `null` pendant l'écran de chargement. */
+	startedAt: string | null;
+	teams: [LiveTeam, LiveTeam];
+}
+
+export type LiveGameResult =
+	| { state: 'in-game'; game: LiveGame }
+	| { state: 'other-mode'; queueLabel: string }
+	| { state: 'not-in-game' };
+
+export type RankedStats =
+	| {
+			status: 'ranked';
+			tier: string;
+			tierLabel: string;
+			/** `null` pour Maître, Grand Maître et Challenger. */
+			division: string | null;
+			leaguePoints: number;
+			wins: number;
+			losses: number;
+			winRate: number;
+	  }
+	| { status: 'unranked' }
+	| { status: 'unavailable' };
+
+export type RankedStatsMap = Record<Puuid, RankedStats>;

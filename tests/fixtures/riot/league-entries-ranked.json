@@ -1,0 +1,28 @@
+[
+	{
+		"queueType": "RANKED_SOLO_5x5",
+		"tier": "PLATINUM",
+		"rank": "II",
+		"leaguePoints": 45,
+		"wins": 120,
+		"losses": 102,
+		"puuid": "puuid-reference",
+		"veteran": false,
+		"inactive": false,
+		"freshBlood": false,
+		"hotStreak": true
+	},
+	{
+		"queueType": "RANKED_FLEX_SR",
+		"tier": "GOLD",
+		"rank": "I",
+		"leaguePoints": 10,
+		"wins": 12,
+		"losses": 9,
+		"puuid": "puuid-reference",
+		"veteran": false,
+		"inactive": false,
+		"freshBlood": false,
+		"hotStreak": false
+	}
+]

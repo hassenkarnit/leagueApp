@@ -2,6 +2,7 @@
 // fausse clé, stockage en mémoire (jamais d'écriture dans data/), Riot simulé par MSW.
 import { createAnalyzer } from '../../src/lib/server/analysis/analyzer.ts';
 import { InMemoryAnalysisStore } from '../../src/lib/server/analysis/store.ts';
+import { createLiveGameService } from '../../src/lib/server/live-game.ts';
 import { createPlayersService } from '../../src/lib/server/players.ts';
 import { createRiotClient } from '../../src/lib/server/riot/client.ts';
 import { createLimiterRegistry } from '../../src/lib/server/riot/rate-limiter.ts';
@@ -20,6 +21,7 @@ export function createTestServices() {
 		staticData,
 		analysisStore,
 		players: createPlayersService({ riot: riotClient, staticData }),
-		analyzer: createAnalyzer({ riot: riotClient, store: analysisStore })
+		analyzer: createAnalyzer({ riot: riotClient, store: analysisStore }),
+		liveGame: createLiveGameService({ riot: riotClient, staticData })
 	};
 }

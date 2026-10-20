@@ -23,6 +23,9 @@ const QUEUE_LABELS: Record<number, string> = {
 
 const VersionsDto = z.array(z.string()).min(1);
 const QueuesDto = z.array(z.object({ queueId: z.number(), description: z.string().nullable() }));
+const ChampionsDto = z.object({
+	data: z.record(z.string(), z.object({ id: z.string(), key: z.string() }))
+});
 
 export function createStaticData({ now = Date.now }: { now?: () => number } = {}) {
 	const cache = new TtlCache<string, unknown>({ ttlMs: SIX_HOURS_MS, now });
@@ -57,8 +60,27 @@ export function createStaticData({ now = Date.now }: { now?: () => number } = {}
 		}
 	}
 
+	/** championId (numéro) → id Data Dragon (ex. 103 → « Ahri »), pour la partie en cours. */
+	async function getChampionIds(version: string): Promise<Map<number, string>> {
+		const url = `${DDRAGON}/cdn/${version}/data/en_US/champion.json`;
+		const champions = (await cache.getOrLoad(`champions:${version}`, () =>
+			fetchJson(url, ChampionsDto)
+		)) as z.infer<typeof ChampionsDto>;
+		return new Map(Object.values(champions.data).map((c) => [Number(c.key), c.id]));
+	}
+
 	return {
 		getVersion,
+
+		async getChampion(championId: number): Promise<{ name: string; iconUrl: string | null }> {
+			const version = await getVersion();
+			const id = await getChampionIds(version)
+				.then((ids) => ids.get(championId))
+				.catch(() => undefined);
+			return id
+				? { name: id, iconUrl: `${DDRAGON}/cdn/${version}/img/champion/${id}.png` }
+				: { name: `Champion ${championId}`, iconUrl: null };
+		},
 
 		async championIconUrl(championName: string): Promise<string> {
 			return `${DDRAGON}/cdn/${await getVersion()}/img/champion/${championName}.png`;

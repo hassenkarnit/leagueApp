@@ -1,10 +1,17 @@
 // Client unique de l'API Riot (principe II) : authentification, limiteur, validation, erreurs typées.
 import type { Platform, Puuid, RiotId } from '#lib/shared/types.ts';
-import type { z } from 'zod';
+import { z } from 'zod';
 import { errors } from '../errors.ts';
 import type { Priority, RateLimiter } from './rate-limiter.ts';
 import { hostFor, regionsFor } from './routing.ts';
-import { AccountDto, MatchDto, MatchIdsDto, SummonerDto } from './schemas.ts';
+import {
+	AccountDto,
+	ActiveGameDto,
+	LeagueEntryDto,
+	MatchDto,
+	MatchIdsDto,
+	SummonerDto
+} from './schemas.ts';
 
 /** Un match refusé par Riot (403/404 par conception : Brawl, ARAM Mayhem…) — ignoré, jamais affiché. */
 export class MatchUnavailableError extends Error {
@@ -31,6 +38,8 @@ interface RequestSpec<S extends z.ZodType> {
 	priority: Priority;
 	/** Pour getMatch : 403/404 signifient « match indisponible ». */
 	matchId?: string;
+	/** Pour getActiveGame : 404 signifie « pas en partie », ce n'est pas une erreur. */
+	nullOn404?: boolean;
 }
 
 export function createRiotClient({ apiKey, limiterFor, logger = console }: RiotClientOptions) {
@@ -51,7 +60,11 @@ export function createRiotClient({ apiKey, limiterFor, logger = console }: RiotC
 		return errors.riotUnavailable();
 	}
 
-	async function request<S extends z.ZodType>(spec: RequestSpec<S>): Promise<z.infer<S>> {
+	async function request<S extends z.ZodType>(
+		spec: RequestSpec<S> & { nullOn404: true }
+	): Promise<z.infer<S> | null>;
+	async function request<S extends z.ZodType>(spec: RequestSpec<S>): Promise<z.infer<S>>;
+	async function request<S extends z.ZodType>(spec: RequestSpec<S>): Promise<z.infer<S> | null> {
 		const limiter = limiterFor(spec.host);
 		const url = `https://${spec.host}${spec.path}`;
 
@@ -74,6 +87,7 @@ export function createRiotClient({ apiKey, limiterFor, logger = console }: RiotC
 				if (attempt === 0) continue;
 				throw errors.riotRateLimited(seconds);
 			}
+			if (response.status === 404 && spec.nullOn404) return null;
 			if (!response.ok) throw failure(response.status, spec);
 
 			keyWarningShown = false;
@@ -131,6 +145,31 @@ export function createRiotClient({ apiKey, limiterFor, logger = console }: RiotC
 				method: 'match.getMatch',
 				priority,
 				matchId
+			});
+		},
+
+		/** Partie en cours (spectator-v5) ; `null` si le joueur n'est pas en partie. */
+		getActiveGame(puuid: Puuid, platform: Platform, priority: Priority = 'interactive') {
+			regionsFor(platform); // valide la plateforme
+			return request({
+				host: hostFor(platform),
+				path: `/lol/spectator/v5/active-games/by-summoner/${encodeURIComponent(puuid)}`,
+				schema: ActiveGameDto,
+				method: 'spectator.activeGame',
+				priority,
+				nullOn404: true
+			});
+		},
+
+		/** Classements de la saison en cours (league-v4), une entrée par file classée. */
+		getLeagueEntries(puuid: Puuid, platform: Platform, priority: Priority = 'interactive') {
+			regionsFor(platform);
+			return request({
+				host: hostFor(platform),
+				path: `/lol/league/v4/entries/by-puuid/${encodeURIComponent(puuid)}`,
+				schema: z.array(LeagueEntryDto),
+				method: 'league.entriesByPuuid',
+				priority
 			});
 		}
 	};

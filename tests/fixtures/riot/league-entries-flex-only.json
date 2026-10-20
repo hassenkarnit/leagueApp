@@ -1,0 +1,15 @@
+[
+	{
+		"queueType": "RANKED_FLEX_SR",
+		"tier": "SILVER",
+		"rank": "III",
+		"leaguePoints": 70,
+		"wins": 5,
+		"losses": 7,
+		"puuid": "puuid-friend",
+		"veteran": false,
+		"inactive": false,
+		"freshBlood": true,
+		"hotStreak": false
+	}
+]

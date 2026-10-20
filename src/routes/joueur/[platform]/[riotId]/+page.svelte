@@ -3,16 +3,22 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { apiGet } from '#lib/client/api.ts';
-	import { getEncounterCounts, getEncounterSummary } from '#lib/client/endpoints.ts';
+	import {
+		getEncounterCounts,
+		getEncounterSummary,
+		getLiveGame,
+		getRankedStats
+	} from '#lib/client/endpoints.ts';
 	import { reference } from '#lib/client/reference.svelte.ts';
 	import EncounterPanel from '#lib/components/EncounterPanel.svelte';
 	import ErrorMessage from '#lib/components/ErrorMessage.svelte';
+	import LiveGameSection from '#lib/components/LiveGameSection.svelte';
 	import MatchList, { type MatchListState } from '#lib/components/MatchList.svelte';
 	import PlayerHeader from '#lib/components/PlayerHeader.svelte';
 	import SearchForm from '#lib/components/SearchForm.svelte';
 	import { isPlatform } from '#lib/shared/platforms.ts';
 	import { formatRiotId, toUrlSegment } from '#lib/shared/riot-id.ts';
-	import type { MatchPage, Participant, Platform, Puuid, RiotId } from '#lib/shared/types.ts';
+	import type { MatchPage, Platform, PlayerRef, Puuid, RiotId } from '#lib/shared/types.ts';
 	import type { PageProps } from './$types';
 
 	let { data, params }: PageProps = $props();
@@ -36,7 +42,7 @@
 	}
 
 	/** Joueur dont on affiche les parties communes (panneau latéral). */
-	let selected = $state<Participant | null>(null);
+	let selected = $state<PlayerRef | null>(null);
 
 	// Au retour arrière, on retrouve les matchs déjà chargés et dépliés (US3).
 	let list = $state<ReturnType<typeof MatchList>>();
@@ -72,6 +78,20 @@
 
 	{#if data.profile}
 		<PlayerHeader profile={data.profile} />
+		{#if currentPlatform}
+			<!-- Partie en cours (feature 002) : vérifiée uniquement au clic. -->
+			{#key data.apiBase}
+				<LiveGameSection
+					loadLiveGame={() => getLiveGame(data.apiBase)}
+					platform={currentPlatform}
+					highlightPuuid={data.profile.puuid}
+					selfPuuid={reference.current?.puuid ?? null}
+					{loadCounts}
+					loadRankedStats={(puuids) => getRankedStats(currentPlatform, puuids)}
+					onselect={(participant) => (selected = participant)}
+				/>
+			{/key}
+		{/if}
 	{/if}
 
 	{#if data.firstPage}

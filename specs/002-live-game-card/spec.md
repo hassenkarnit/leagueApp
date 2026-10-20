@@ -123,6 +123,9 @@ pourcentage de victoires et le nombre de victoires et de défaites.
   Solo/Duo : « Non classé ».
 - **Joueur recherché = compte de référence** : la card affiche sa propre partie ; il est
   identifié comme « C'est vous ».
+- **Joueur dont Riot masque l'identité** (constaté en réel : pas d'identifiant, Riot ID remplacé
+  par le nom du champion) : affiché « Joueur masqué » avec son champion, sans badge, statistiques,
+  panneau ni lien de profil (FR-006a).
 - **Analyse en cours pendant l'affichage de la card** : les badges reflètent la dernière analyse
   terminée.
 - **Clic sur « Actualiser » alors que la card est déjà affichée pour la même partie** : la card
@@ -151,6 +154,9 @@ pourcentage de victoires et le nombre de victoires et de défaites.
   dépliage), côte à côte sur un écran d'ordinateur, chaque joueur sur sa propre ligne.
 - **FR-006**: Pour chaque joueur, la card DOIT afficher son Riot ID et l'icône et le nom de son
   champion. Elle NE DOIT PAS afficher les champions bannis, les sorts d'invocateur ni les runes.
+- **FR-006a**: Un joueur dont Riot masque l'identité DOIT apparaître comme « Joueur masqué » avec
+  son champion ; il NE DOIT avoir ni badge, ni statistiques, ni panneau « parties communes », ni
+  lien « Voir le profil », et sa présence NE DOIT PAS empêcher l'affichage de la card.
 - **FR-007**: Le joueur dont on consulte le profil DOIT être mis en évidence dans la card.
 - **FR-008**: L'échec de la vérification DOIT être signalé par un message clair sans empêcher
   l'affichage du profil et de l'historique.
@@ -239,3 +245,5 @@ pourcentage de victoires et le nombre de victoires et de défaites.
   % de victoires, nombre de victoires et de défaites ; pas de bannissements, sorts ni runes.
   Card grande, deux équipes affichées en entier sans dépliage.
 - Q: Le meilleur rang de carrière (non fourni par Riot) ? → A: Rang actuel seulement.
+- Q (découvert pendant l'essai réel) : que faire d'un joueur dont Riot masque l'identité ? →
+  A: l'afficher « Joueur masqué » avec son champion, sans badge ni statistiques (FR-006a).

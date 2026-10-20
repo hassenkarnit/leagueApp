@@ -1,0 +1,61 @@
+{
+	"type": "champion",
+	"format": "standAloneComplex",
+	"version": "16.20.1",
+	"data": {
+		"Ahri": {
+			"version": "16.20.1",
+			"id": "Ahri",
+			"key": "103",
+			"name": "Ahri"
+		},
+		"Lux": {
+			"version": "16.20.1",
+			"id": "Lux",
+			"key": "99",
+			"name": "Lux"
+		},
+		"Garen": {
+			"version": "16.20.1",
+			"id": "Garen",
+			"key": "86",
+			"name": "Garen"
+		},
+		"Zed": {
+			"version": "16.20.1",
+			"id": "Zed",
+			"key": "238",
+			"name": "Zed"
+		},
+		"Jinx": {
+			"version": "16.20.1",
+			"id": "Jinx",
+			"key": "222",
+			"name": "Jinx"
+		},
+		"LeeSin": {
+			"version": "16.20.1",
+			"id": "LeeSin",
+			"key": "64",
+			"name": "Lee Sin"
+		},
+		"Thresh": {
+			"version": "16.20.1",
+			"id": "Thresh",
+			"key": "412",
+			"name": "Thresh"
+		},
+		"Darius": {
+			"version": "16.20.1",
+			"id": "Darius",
+			"key": "122",
+			"name": "Darius"
+		},
+		"Vayne": {
+			"version": "16.20.1",
+			"id": "Vayne",
+			"key": "67",
+			"name": "Vayne"
+		}
+	}
+}

@@ -2,6 +2,7 @@
 import { createAnalyzer } from './analysis/analyzer.ts';
 import { JsonFileAnalysisStore } from './analysis/store.ts';
 import { getRiotApiKey } from './config.ts';
+import { createLiveGameService } from './live-game.ts';
 import { createPlayersService } from './players.ts';
 import { createRiotClient } from './riot/client.ts';
 import { createLimiterRegistry } from './riot/rate-limiter.ts';
@@ -19,3 +20,5 @@ export const analysisStore = new JsonFileAnalysisStore();
 export const players = createPlayersService({ riot: riotClient, staticData });
 
 export const analyzer = createAnalyzer({ riot: riotClient, store: analysisStore });
+
+export const liveGame = createLiveGameService({ riot: riotClient, staticData });

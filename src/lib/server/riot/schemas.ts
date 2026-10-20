@@ -44,3 +44,34 @@ export const MatchDto = z.object({
 	})
 });
 export type MatchDto = z.infer<typeof MatchDto>;
+
+// --- Feature 002 : partie en cours (spectator-v5) et classement (league-v4) ---
+
+export const ActiveParticipantDto = z.object({
+	/** `null` pour un joueur masqué par Riot ; son `riotId` est alors le nom du champion. */
+	puuid: z.string().nullable(),
+	riotId: z.string(),
+	championId: z.number().int(),
+	teamId: z.number().int(),
+	bot: z.boolean().optional().default(false)
+});
+export type ActiveParticipantDto = z.infer<typeof ActiveParticipantDto>;
+
+export const ActiveGameDto = z.object({
+	gameId: z.number(),
+	gameQueueConfigId: z.number().int(),
+	/** epoch ms ; 0 pendant l'écran de chargement. */
+	gameStartTime: z.number(),
+	participants: z.array(ActiveParticipantDto)
+});
+export type ActiveGameDto = z.infer<typeof ActiveGameDto>;
+
+export const LeagueEntryDto = z.object({
+	queueType: z.string(),
+	tier: z.string(),
+	rank: z.string(),
+	leaguePoints: z.number().int(),
+	wins: z.number().int(),
+	losses: z.number().int()
+});
+export type LeagueEntryDto = z.infer<typeof LeagueEntryDto>;

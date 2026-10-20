@@ -12,7 +12,7 @@
 | DTO | Champs utilisés | Règles |
 |---|---|---|
 | `ActiveGameDto` | `gameId`, `gameQueueConfigId`, `gameStartTime` (ms), `participants[]` | autres champs ignorés |
-| `ActiveParticipantDto` | `puuid`, `riotId` (`"Pseudo#TAG"`), `championId` (nombre), `teamId` (100/200), `bot` | `riotId` découpé sur le **dernier** `#` |
+| `ActiveParticipantDto` | `puuid` (**nullable**), `riotId` (`"Pseudo#TAG"`), `championId` (nombre), `teamId` (100/200), `bot` | `riotId` découpé sur le **dernier** `#` ; `puuid: null` = joueur masqué (son `riotId` est alors le nom du champion) |
 | `LeagueEntryDto` | `queueType`, `tier`, `rank`, `leaguePoints`, `wins`, `losses` | seule `RANKED_SOLO_5x5` est retenue |
 
 ## LiveGameResult — résultat d'une vérification (FR-001 à FR-003)
@@ -42,8 +42,9 @@ Union discriminée par `state` :
 |---|---|---|
 | `LiveTeam.side` | `TeamSide` | |
 | `LiveTeam.participants` | `LiveParticipant[]` | ordre fourni par Riot |
-| `LiveParticipant.puuid` | `Puuid` | identité permanente (badges, panneau, statistiques) |
-| `LiveParticipant.gameName`, `tagLine` | `string` | issus de `riotId` |
+| `LiveParticipant.puuid` | `Puuid \| null` | identité permanente (badges, panneau, statistiques) ; `null` si masqué |
+| `LiveParticipant.isHidden` | `boolean` | `true` si Riot masque le joueur → « Joueur masqué », sans badge, stats, panneau ni lien (FR-006a) |
+| `LiveParticipant.gameName`, `tagLine` | `string` | issus de `riotId` ; `''` si masqué |
 | `LiveParticipant.championName` | `string` | `id` Data Dragon (ex. `Zac`) ; inconnu → `Champion {championId}` |
 | `LiveParticipant.championIconUrl` | `string \| null` | `null` si champion inconnu |
 | `LiveParticipant.side` | `TeamSide` | |

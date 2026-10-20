@@ -1,0 +1,192 @@
+{
+	"gameId": 7300000001,
+	"mapId": 11,
+	"gameMode": "ARAM",
+	"gameType": "MATCHED",
+	"gameQueueConfigId": 450,
+	"gameStartTime": 1792500000000,
+	"gameLength": 457,
+	"platformId": "EUW1",
+	"participants": [
+		{
+			"puuid": "puuid-reference",
+			"riotId": "Moi#EUW",
+			"championId": 103,
+			"teamId": 100,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-friend",
+			"riotId": "Ami#EUW1",
+			"championId": 99,
+			"teamId": 100,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-live-1",
+			"riotId": "Allié1#EUW",
+			"championId": 86,
+			"teamId": 100,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-live-2",
+			"riotId": "Allié2#EUW",
+			"championId": 238,
+			"teamId": 100,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-live-3",
+			"riotId": "Allié3#EUW",
+			"championId": 222,
+			"teamId": 100,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-live-4",
+			"riotId": "Adversaire1#EUW",
+			"championId": 64,
+			"teamId": 200,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-live-5",
+			"riotId": "Adversaire2#EUW",
+			"championId": 412,
+			"teamId": 200,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-live-6",
+			"riotId": "Adversaire3#EUW",
+			"championId": 122,
+			"teamId": 200,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-live-7",
+			"riotId": "Adversaire4#EUW",
+			"championId": 67,
+			"teamId": 200,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		},
+		{
+			"puuid": "puuid-live-8",
+			"riotId": "Le Nouveau#EUW",
+			"championId": 9999,
+			"teamId": 200,
+			"bot": false,
+			"spell1Id": 4,
+			"spell2Id": 14,
+			"profileIconId": 29,
+			"lastSelectedSkinIndex": 0,
+			"perks": {
+				"perkIds": [8112],
+				"perkStyle": 8100,
+				"perkSubStyle": 8300
+			},
+			"gameCustomizationObjects": []
+		}
+	],
+	"observers": {
+		"encryptionKey": "x"
+	},
+	"bannedChampions": [
+		{
+			"championId": 157,
+			"teamId": 100,
+			"pickTurn": 1
+		}
+	]
+}

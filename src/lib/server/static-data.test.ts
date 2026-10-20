@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
-import { DDRAGON_VERSIONS_URL, QUEUES_URL } from '../../../tests/msw/handlers.ts';
+import { CHAMPIONS_URL, DDRAGON_VERSIONS_URL, QUEUES_URL } from '../../../tests/msw/handlers.ts';
 import { server } from '../../../tests/msw/server.ts';
 import { createStaticData } from './static-data.ts';
 
@@ -72,5 +72,34 @@ describe('libellés des modes de jeu', () => {
 	it('nomme les parties personnalisées', async () => {
 		const { staticData } = setup();
 		expect(await staticData.getQueueLabel(0)).toBe('Partie personnalisée');
+	});
+});
+
+describe('champions (feature 002 : la partie en cours ne donne que championId)', () => {
+	it('traduit un championId en nom et icône', async () => {
+		const { staticData } = setup();
+		expect(await staticData.getChampion(103)).toEqual({
+			name: 'Ahri',
+			iconUrl: 'https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ahri.png'
+		});
+	});
+
+	it('gère un champion inconnu de Data Dragon', async () => {
+		const { staticData } = setup();
+		expect(await staticData.getChampion(9999)).toEqual({ name: 'Champion 9999', iconUrl: null });
+	});
+
+	it('met champion.json en cache', async () => {
+		let calls = 0;
+		server.use(
+			http.get(CHAMPIONS_URL, () => {
+				calls += 1;
+				return HttpResponse.json({ data: { Ahri: { id: 'Ahri', key: '103' } } });
+			})
+		);
+		const { staticData } = setup();
+		await staticData.getChampion(103);
+		await staticData.getChampion(103);
+		expect(calls).toBe(1);
 	});
 });

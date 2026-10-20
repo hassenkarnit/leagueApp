@@ -22,6 +22,10 @@ la feature 001 ([../001-historique-joueur/research.md](../001-historique-joueur/
 - **Champs utiles d'un participant** : `puuid`, `riotId` (**une seule chaîne** `"Pseudo#TAG"`),
   `championId` (**numéro**), `teamId` (100/200), `bot`. Non utilisés (hors périmètre) : `perks`,
   `spell1Id`, `spell2Id`, `profileIconId`, `lastSelectedSkinIndex`, `gameCustomizationObjects`.
+- **Joueurs masqués (découvert lors de l'essai réel du 2026-10-20)** : certains participants ont
+  `puuid: null` et un `riotId` remplacé par le **nom de leur champion** (ex. `"Corki"`, sans `#`).
+  Un schéma qui exige `puuid` rejette toute la partie → la card ne s'affichait pas (503). Ces
+  joueurs sont désormais acceptés et marqués `isHidden`.
 - **Décision** : nouvelle méthode `getActiveGame(puuid, platform)` du client Riot unique, qui
   renvoie `null` sur 404 (« pas en partie » n'est pas une erreur), avec validation zod.
 - **Alternatives** : appeler l'endpoint depuis le navigateur (rejeté : principe I).

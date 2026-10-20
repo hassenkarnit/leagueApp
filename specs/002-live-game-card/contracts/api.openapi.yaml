@@ -116,9 +116,10 @@ components:
 
     LiveParticipant:
       type: object
-      required: [puuid, gameName, tagLine, championName, championIconUrl, side]
+      required: [puuid, isHidden, gameName, tagLine, championName, championIconUrl, side]
       properties:
-        puuid: { type: string }
+        puuid: { type: [string, 'null'], description: '`null` si Riot masque le joueur' }
+        isHidden: { type: boolean, description: 'Joueur masqué par Riot (FR-006a)' }
         gameName: { type: string }
         tagLine: { type: string }
         championName: { type: string }

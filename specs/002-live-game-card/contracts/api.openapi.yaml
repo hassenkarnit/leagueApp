@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: LeagueApp — API REST interne (ajouts de la feature 002)
+  version: 0.2.0
+  description: |
+    Endpoints ajoutés par la feature 002. Les conventions, schémas communs (Platform, ApiError…)
+    et les endpoints de la feature 001 sont définis dans
+    `specs/001-historique-joueur/contracts/api.openapi.yaml` et restent inchangés.
+servers:
+  - url: http://localhost:5173
+
+paths:
+  /api/players/{platform}/{riotId}/live-game:
+    get:
+      summary: Vérifie si le joueur est en partie (appelé uniquement au clic, FR-001)
+      description: |
+        Jamais mis en cache côté serveur. Un joueur hors partie n'est pas une erreur (200,
+        `state: not-in-game`). Une partie d'un autre mode renvoie `state: other-mode`.
+      parameters:
+        - name: platform
+          in: path
+          required: true
+          schema: { type: string }
+        - name: riotId
+          in: path
+          required: true
+          description: '`{gameName}-{tagLine}` encodé (même format que la feature 001)'
+          schema: { type: string }
+      responses:
+        '200':
+          description: Résultat de la vérification
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LiveGameResult' }
+        '400':
+          description: '`INVALID_RIOT_ID` ou `INVALID_PLATFORM`'
+        '404':
+          description: '`PLAYER_NOT_FOUND` (le Riot ID lui-même n''existe pas)'
+        '429':
+          description: '`RIOT_RATE_LIMITED`, en-tête `Retry-After`'
+        '503':
+          description: '`RIOT_UNAVAILABLE` ou `RIOT_API_KEY_INVALID`'
+
+  /api/ranked/{platform}:
+    get:
+      summary: Rang et statistiques Solo/Duo de plusieurs joueurs (FR-012 à FR-016)
+      description: |
+        Cache serveur de 10 min par PUUID. L'échec pour un joueur ne fait pas échouer la
+        requête : ce joueur est renvoyé avec `status: unavailable`.
+      parameters:
+        - name: platform
+          in: path
+          required: true
+          schema: { type: string }
+        - name: puuids
+          in: query
+          required: true
+          description: 1 à 10 PUUID séparés par des virgules
+          schema: { type: string }
+      responses:
+        '200':
+          description: Une entrée par PUUID demandé
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [stats]
+                properties:
+                  stats:
+                    type: object
+                    additionalProperties: { $ref: '#/components/schemas/RankedStats' }
+        '400':
+          description: '`INVALID_PLATFORM` ou `INVALID_REQUEST` (0 ou plus de 10 PUUID)'
+
+components:
+  schemas:
+    LiveGameResult:
+      oneOf:
+        - type: object
+          required: [state, game]
+          properties:
+            state: { const: in-game }
+            game: { $ref: '#/components/schemas/LiveGame' }
+        - type: object
+          required: [state, queueLabel]
+          properties:
+            state: { const: other-mode }
+            queueLabel: { type: string }
+        - type: object
+          required: [state]
+          properties:
+            state: { const: not-in-game }
+
+    LiveGame:
+      type: object
+      required: [gameId, queueLabel, startedAt, teams]
+      properties:
+        gameId: { type: integer }
+        queueLabel: { type: string, examples: ['Classée Solo/Duo'] }
+        startedAt:
+          type: [string, 'null']
+          format: date-time
+          description: '`null` pendant l''écran de chargement'
+        teams:
+          type: array
+          minItems: 2
+          maxItems: 2
+          items:
+            type: object
+            required: [side, participants]
+            properties:
+              side: { type: string, enum: [blue, red] }
+              participants:
+                type: array
+                items: { $ref: '#/components/schemas/LiveParticipant' }
+
+    LiveParticipant:
+      type: object
+      required: [puuid, gameName, tagLine, championName, championIconUrl, side]
+      properties:
+        puuid: { type: string }
+        gameName: { type: string }
+        tagLine: { type: string }
+        championName: { type: string }
+        championIconUrl: { type: [string, 'null'], format: uri }
+        side: { type: string, enum: [blue, red] }
+
+    RankedStats:
+      oneOf:
+        - type: object
+          required: [status, tier, tierLabel, division, leaguePoints, wins, losses, winRate]
+          properties:
+            status: { const: ranked }
+            tier: { type: string, examples: [PLATINUM] }
+            tierLabel: { type: string, examples: [Platine] }
+            division: { type: [string, 'null'], examples: [II] }
+            leaguePoints: { type: integer }
+            wins: { type: integer }
+            losses: { type: integer }
+            winRate: { type: integer, minimum: 0, maximum: 100 }
+        - type: object
+          required: [status]
+          properties:
+            status: { enum: [unranked, unavailable] }

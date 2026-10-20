@@ -28,8 +28,8 @@ Identiques aux features 001/002 : imports `#lib/...` avec extension, runes Svelt
 
 ## Phase 1: Setup
 
-- [ ] T001 Vérifier la base : branche `003-rangs-logos-winrate-moyenne`, `npm run test` / `check` / `lint` au vert avant tout changement
-- [ ] T002 [P] Télécharger les 10 emblèmes depuis `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/ranked-emblem/emblem-<palier>.png` (avec un User-Agent défini), les réduire à ~64 px de large (`sips -Z 64` sous macOS) et les enregistrer dans `static/ranks/{iron,bronze,silver,gold,platinum,emerald,diamond,master,grandmaster,challenger}.png` (research R1) ; vérifier que chaque fichier est < 20 Ko
+- [X] T001 Vérifier la base : branche `003-rangs-logos-winrate-moyenne`, `npm run test` / `check` / `lint` au vert avant tout changement
+- [X] T002 [P] Télécharger les 10 emblèmes depuis `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/ranked-emblem/emblem-<palier>.png` (avec un User-Agent défini), les réduire à ~64 px de large (`sips -Z 64` sous macOS) et les enregistrer dans `static/ranks/{iron,bronze,silver,gold,platinum,emerald,diamond,master,grandmaster,challenger}.png` (research R1) ; vérifier que chaque fichier est < 20 Ko
 
 ---
 
@@ -47,15 +47,15 @@ Aucune tâche bloquante : les fonctions pures sont rattachées aux user stories 
 
 ### Tests (écrire d'abord, les voir échouer)
 
-- [ ] T003 [P] [US1] Tests unitaires de `emblemUrl` dans `src/lib/shared/ranked.test.ts` : `'EMERALD'` → `/ranks/emerald.png` ; les 10 paliers renvoient une URL ; palier inconnu / `null` → `null`
-- [ ] T004 [P] [US1] Tests composant `RankEmblem` dans `src/lib/components/RankEmblem.svelte.test.ts` : `tier="GOLD"` → `<img alt="Or">` avec `src="/ranks/gold.png"` ; `tier=null` → emblème neutre (`role="img"`, nom « Sans rang ») sans `<img>` de palier ; l'événement `error` de l'image la masque (FR-004)
-- [ ] T005 [US1] Tests dans `src/lib/components/LiveGameCard.svelte.test.ts` : un joueur classé Platine II affiche l'emblème « Platine » et le texte « Platine II · 45 LP » ; un joueur `unranked` affiche l'emblème « Sans rang » et « Non classé » ; un joueur `unavailable` ou masqué n'affiche aucun emblème (FR-003)
+- [X] T003 [P] [US1] Tests unitaires de `emblemUrl` dans `src/lib/shared/ranked.test.ts` : `'EMERALD'` → `/ranks/emerald.png` ; les 10 paliers renvoient une URL ; palier inconnu / `null` → `null`
+- [X] T004 [P] [US1] Tests composant `RankEmblem` dans `src/lib/components/RankEmblem.svelte.test.ts` : `tier="GOLD"` → `<img alt="Or">` avec `src="/ranks/gold.png"` ; `tier=null` → emblème neutre (`role="img"`, nom « Sans rang ») sans `<img>` de palier ; l'événement `error` de l'image la masque (FR-004)
+- [X] T005 [US1] Tests dans `src/lib/components/LiveGameCard.svelte.test.ts` : un joueur classé Platine II affiche l'emblème « Platine » et le texte « Platine II · 45 LP » ; un joueur `unranked` affiche l'emblème « Sans rang » et « Non classé » ; un joueur `unavailable` ou masqué n'affiche aucun emblème (FR-003)
 
 ### Implementation
 
-- [ ] T006 [US1] Ajouter `emblemUrl(tier: string | null): string | null` dans `src/lib/shared/ranked.ts` (T003 passe)
-- [ ] T007 [P] [US1] Créer `src/lib/components/RankEmblem.svelte` selon `contracts/ui.md` (props `tier`, `size = 28`, `label` ; SVG inline neutre en pointillés ; `onerror` masque l'image) (T004 passe)
-- [ ] T008 [US1] Modifier `src/lib/components/LiveTeamColumn.svelte` : afficher `RankEmblem` à gauche du texte du rang (`ranked` → palier, `unranked` → neutre, `unavailable` → rien) (T005 passe)
+- [X] T006 [US1] Ajouter `emblemUrl(tier: string | null): string | null` dans `src/lib/shared/ranked.ts` (T003 passe)
+- [X] T007 [P] [US1] Créer `src/lib/components/RankEmblem.svelte` selon `contracts/ui.md` (props `tier`, `size = 28`, `label` ; SVG inline neutre en pointillés ; `onerror` masque l'image) (T004 passe)
+- [X] T008 [US1] Modifier `src/lib/components/LiveTeamColumn.svelte` : afficher `RankEmblem` à gauche du texte du rang (`ranked` → palier, `unranked` → neutre, `unavailable` → rien) (T005 passe)
 
 **Checkpoint**: US1 livrable seule.
 

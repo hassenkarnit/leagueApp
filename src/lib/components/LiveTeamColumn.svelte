@@ -11,6 +11,7 @@
 		RankedStatsMap
 	} from '#lib/shared/types.ts';
 	import EncounterBadge from './EncounterBadge.svelte';
+	import RankEmblem from './RankEmblem.svelte';
 
 	let {
 		team,
@@ -100,17 +101,24 @@
 				</div>
 				{#if stats !== undefined && participant.puuid !== null}
 					{@const playerStats = stats?.[participant.puuid]}
-					<div class="shrink-0 text-right text-xs">
-						{#if stats === null}
-							<p class="text-zinc-500">Chargement du classement…</p>
-						{:else if playerStats?.status === 'ranked'}
-							<p class="font-medium text-zinc-800">{formatRank(playerStats)}</p>
-							<p class="text-zinc-600 tabular-nums">{formatRecord(playerStats)}</p>
+					<div class="flex shrink-0 items-center gap-2 text-right text-xs">
+						{#if playerStats?.status === 'ranked'}
+							<RankEmblem tier={playerStats.tier} label={playerStats.tierLabel} />
 						{:else if playerStats?.status === 'unranked'}
-							<p class="text-zinc-600">Non classé</p>
-						{:else}
-							<p class="text-zinc-500">Statistiques indisponibles</p>
+							<RankEmblem tier={null} />
 						{/if}
+						<div>
+							{#if stats === null}
+								<p class="text-zinc-500">Chargement du classement…</p>
+							{:else if playerStats?.status === 'ranked'}
+								<p class="font-medium text-zinc-800">{formatRank(playerStats)}</p>
+								<p class="text-zinc-600 tabular-nums">{formatRecord(playerStats)}</p>
+							{:else if playerStats?.status === 'unranked'}
+								<p class="text-zinc-600">Non classé</p>
+							{:else}
+								<p class="text-zinc-500">Statistiques indisponibles</p>
+							{/if}
+						</div>
 					</div>
 				{/if}
 			</li>

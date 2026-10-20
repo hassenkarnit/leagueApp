@@ -147,6 +147,26 @@ describe('LiveGameCard (US3 : niveau Solo/Duo)', () => {
 		expect(row('puuid-Adv1')).toContain('Statistiques indisponibles');
 	});
 
+	it("affiche l'emblème du palier, ou un emblème neutre, ou rien (US1)", async () => {
+		const screen = render(LiveGameCard, {
+			game: liveGame(),
+			platform: 'euw1',
+			highlightPuuid: 'puuid-Moi',
+			stats,
+			now: () => START
+		});
+		const row = (puuid: string) =>
+			screen.container.querySelector(`[data-puuid="${puuid}"]`) as HTMLElement;
+		expect(row('puuid-Moi').querySelector('img[alt="Platine"]')?.getAttribute('src')).toBe(
+			'/ranks/platinum.png'
+		);
+		expect(row('puuid-Ami').querySelector('[role="img"][aria-label="Sans rang"]')).not.toBeNull();
+		expect(row('puuid-Ami').querySelector('img[src^="/ranks/"]')).toBeNull();
+		expect(
+			row('puuid-Adv1').querySelector('img[src^="/ranks/"], [aria-label="Sans rang"]')
+		).toBeNull();
+	});
+
 	it('indique le chargement tant que les statistiques ne sont pas arrivées', async () => {
 		const screen = render(LiveGameCard, {
 			game: liveGame(),

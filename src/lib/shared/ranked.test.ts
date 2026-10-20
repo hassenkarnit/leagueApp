@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TIER_LABELS, formatRank, formatRecord, winRate } from './ranked.ts';
+import { TIER_LABELS, emblemUrl, formatRank, formatRecord, winRate } from './ranked.ts';
 
 describe('winRate', () => {
 	it.each([
@@ -47,5 +47,19 @@ describe('TIER_LABELS', () => {
 			GRANDMASTER: 'Grand Maître',
 			CHALLENGER: 'Challenger'
 		});
+	});
+});
+
+describe('emblemUrl', () => {
+	it('renvoie le fichier embarqué du palier', () => {
+		expect(emblemUrl('EMERALD')).toBe('/ranks/emerald.png');
+	});
+
+	it.each(Object.keys(TIER_LABELS))('%s a un emblème', (tier) => {
+		expect(emblemUrl(tier)).toBe(`/ranks/${tier.toLowerCase()}.png`);
+	});
+
+	it.each([[null], ['UNKNOWN']])('%s → null', (tier) => {
+		expect(emblemUrl(tier)).toBeNull();
 	});
 });

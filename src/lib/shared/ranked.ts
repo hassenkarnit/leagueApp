@@ -47,3 +47,8 @@ export function formatRecord({
 }): string {
 	return `${winRate} % · ${wins} V / ${losses} D`;
 }
+
+/** Emblème embarqué (`static/ranks/`) d'un palier ; `null` si le palier est inconnu. */
+export function emblemUrl(tier: string | null): string | null {
+	return tier !== null && tier in TIER_LABELS ? `/ranks/${tier.toLowerCase()}.png` : null;
+}

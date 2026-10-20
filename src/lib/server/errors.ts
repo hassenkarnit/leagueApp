@@ -30,6 +30,7 @@ export const errors = {
 			400
 		),
 	invalidPlatform: () => new AppError('INVALID_PLATFORM', 'Serveur inconnu.', 400),
+	invalidRequest: () => new AppError('INVALID_REQUEST', 'Requête invalide.', 400),
 	playerNotFound: () =>
 		new AppError(
 			'PLAYER_NOT_FOUND',

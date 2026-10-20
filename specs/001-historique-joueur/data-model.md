@@ -165,6 +165,7 @@ joueurs jamais croisés sont **absents** de l'objet (aucun badge).
 |---|---|---|
 | `INVALID_RIOT_ID` | 400 | « Format attendu : Pseudo#TAG (3 à 16 caractères, puis 3 à 5 caractères après le #). » |
 | `INVALID_PLATFORM` | 400 | « Serveur inconnu. » |
+| `INVALID_REQUEST` | 400 | « Requête invalide. » (paramètre `start`, `count` ou `with` hors limites) |
 | `PLAYER_NOT_FOUND` | 404 | « Joueur introuvable. Vérifie le pseudo, le tag et le serveur. » |
 | `REFERENCE_NOT_ANALYZED` | 404 | « Lance d'abord l'analyse de ton historique. » |
 | `ANALYSIS_ALREADY_RUNNING` | 409 | « Une analyse est déjà en cours. » |

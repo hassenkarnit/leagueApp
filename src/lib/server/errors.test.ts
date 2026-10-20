@@ -6,6 +6,7 @@ describe('toErrorResponse', () => {
 	it.each<[AppError, ApiErrorCode, number]>([
 		[errors.invalidRiotId(), 'INVALID_RIOT_ID', 400],
 		[errors.invalidPlatform(), 'INVALID_PLATFORM', 400],
+		[errors.invalidRequest(), 'INVALID_REQUEST', 400],
 		[errors.playerNotFound(), 'PLAYER_NOT_FOUND', 404],
 		[errors.referenceNotAnalyzed(), 'REFERENCE_NOT_ANALYZED', 404],
 		[errors.analysisAlreadyRunning(), 'ANALYSIS_ALREADY_RUNNING', 409],

@@ -135,6 +135,7 @@ export type EncounterCounts = Record<Puuid, number>;
 export type ApiErrorCode =
 	| 'INVALID_RIOT_ID'
 	| 'INVALID_PLATFORM'
+	| 'INVALID_REQUEST'
 	| 'PLAYER_NOT_FOUND'
 	| 'REFERENCE_NOT_ANALYZED'
 	| 'ANALYSIS_ALREADY_RUNNING'

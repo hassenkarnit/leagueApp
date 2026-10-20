@@ -27,6 +27,12 @@
 	} = $props();
 
 	let summary = $state<EncounterSummary | null>(null);
+	let closeButton = $state<HTMLButtonElement>();
+
+	// Le focus clavier passe dans le panneau dès son ouverture.
+	$effect(() => {
+		closeButton?.focus();
+	});
 	let error = $state<ApiError | null>(null);
 
 	const title = $derived(`${participant.gameName}#${participant.tagLine}`);
@@ -88,6 +94,7 @@
 		</div>
 		<button
 			type="button"
+			bind:this={closeButton}
 			onclick={onclose}
 			aria-label="Fermer"
 			class="rounded-md px-2 py-1 text-zinc-500 hover:bg-zinc-100 focus:ring-2 focus:ring-indigo-300 focus:outline-none"
@@ -134,7 +141,10 @@
 		</div>
 
 		<details class="text-sm">
-			<summary class="cursor-pointer font-medium text-indigo-700">Voir les parties</summary>
+			<summary
+				class="cursor-pointer rounded font-medium text-indigo-700 focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+				>Voir les parties</summary
+			>
 			<ul class="mt-2 divide-y divide-zinc-100">
 				{#each summary.games as game (game.matchId)}
 					<li class="py-2">

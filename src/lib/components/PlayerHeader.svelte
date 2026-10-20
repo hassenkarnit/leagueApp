@@ -19,7 +19,7 @@
 	/>
 	<div>
 		<h1 class="text-2xl font-semibold tracking-tight">
-			{profile.gameName}<span class="text-zinc-400">#{profile.tagLine}</span>
+			{profile.gameName}<span class="text-zinc-500">#{profile.tagLine}</span>
 		</h1>
 		<p class="text-sm text-zinc-600">Niveau {profile.summonerLevel} · {platformLabel}</p>
 	</div>

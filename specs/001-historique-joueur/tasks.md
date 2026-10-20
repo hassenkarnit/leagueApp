@@ -184,10 +184,10 @@ Riot est toujours simulée (MSW, `onUnhandledFrame: 'error'`).
 
 **Purpose**: Sécurité, accessibilité, documentation, validation finale.
 
-- [ ] T075 [P] Vérifier qu'aucun secret ne fuit : `npm run build` puis `grep -rn "RGAPI\|X-Riot-Token\|RIOT_API_KEY" build/client` ne trouve rien ; `git grep -n "RGAPI-" -- ':!.env.example'` ne trouve rien
-- [ ] T076 [P] Accessibilité de base dans `src/lib/components/*.svelte` : `<label>` sur chaque champ, boutons au clavier, focus visible, contraste suffisant, `aria-expanded` sur les matchs dépliables
-- [ ] T077 [P] Mettre à jour `README.md` : remplacer la mention légale par le texte anglais **exact** de research.md R15 (+ traduction) et lister les fonctionnalités de la feature 001
-- [ ] T078 Lancer `npm run test`, `npm run check`, `npm run lint` : 0 échec, 0 erreur ; vérifier que chaque exigence FR-001 à FR-020 est couverte par au moins un test (quality gate de la constitution)
+- [X] T075 [P] Vérifier qu'aucun secret ne fuit : `npm run build` puis `grep -rn "RGAPI\|X-Riot-Token\|RIOT_API_KEY" build/client` ne trouve rien ; `git grep -n "RGAPI-" -- ':!.env.example'` ne trouve rien
+- [X] T076 [P] Accessibilité de base dans `src/lib/components/*.svelte` : `<label>` sur chaque champ, boutons au clavier, focus visible, contraste suffisant, `aria-expanded` sur les matchs dépliables
+- [X] T077 [P] Mettre à jour `README.md` : remplacer la mention légale par le texte anglais **exact** de research.md R15 (+ traduction) et lister les fonctionnalités de la feature 001
+- [X] T078 Lancer `npm run test`, `npm run check`, `npm run lint` : 0 échec, 0 erreur ; vérifier que chaque exigence FR-001 à FR-020 est couverte par au moins un test (quality gate de la constitution)
 - [ ] T079 Dérouler l'intégralité des 18 scénarios de `specs/001-historique-joueur/quickstart.md` (dont 17 : fausse clé, et 18 : mention légale) ; commit `chore: polish feature 001`
 
 ---

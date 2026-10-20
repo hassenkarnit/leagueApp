@@ -75,7 +75,7 @@
 						})}
 						aria-label="Voir le profil de {participant.gameName}#{participant.tagLine}"
 						title="Voir le profil"
-						class="rounded px-1 text-zinc-400 hover:bg-zinc-100 hover:text-indigo-700 focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+						class="rounded px-1 text-zinc-500 hover:bg-zinc-100 hover:text-indigo-700 focus:ring-2 focus:ring-indigo-300 focus:outline-none"
 						>↗</a
 					>
 				{/if}

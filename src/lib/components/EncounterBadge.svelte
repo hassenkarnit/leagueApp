@@ -6,6 +6,7 @@
 
 {#if count}
 	<span
+		role="img"
 		aria-label={label}
 		title={label}
 		class="rounded-full bg-indigo-50 px-1.5 py-0.5 text-xs font-medium whitespace-nowrap text-indigo-700"

@@ -40,6 +40,7 @@ export default defineConfig({
 					name: 'server',
 					environment: 'node',
 					include: ['src/**/*.{test,spec}.{js,ts}'],
+					setupFiles: ['tests/msw/setup.ts'],
 					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
 				}
 			}

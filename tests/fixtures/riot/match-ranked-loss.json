@@ -1,0 +1,191 @@
+{
+	"metadata": {
+		"dataVersion": "2",
+		"matchId": "EUW1_1002",
+		"participants": [
+			"puuid-reference",
+			"puuid-player-1",
+			"puuid-player-9",
+			"puuid-player-10",
+			"puuid-player-11",
+			"puuid-friend",
+			"puuid-player-12",
+			"puuid-player-13",
+			"puuid-player-14",
+			"puuid-player-15"
+		]
+	},
+	"info": {
+		"gameCreation": 1792413540000,
+		"gameStartTimestamp": 1792413600000,
+		"gameDuration": 2105,
+		"gameMode": "CLASSIC",
+		"gameType": "MATCHED_GAME",
+		"queueId": 440,
+		"platformId": "EUW1",
+		"mapId": 11,
+		"participants": [
+			{
+				"puuid": "puuid-reference",
+				"riotIdGameName": "Moi",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "Ahri",
+				"championId": 1,
+				"teamId": 100,
+				"win": false,
+				"kills": 3,
+				"deaths": 2,
+				"assists": 5,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-player-1",
+				"riotIdGameName": "Joueur1",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "Garen",
+				"championId": 1,
+				"teamId": 100,
+				"win": false,
+				"kills": 4,
+				"deaths": 2,
+				"assists": 6,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-player-9",
+				"riotIdGameName": "Joueur9",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "LeeSin",
+				"championId": 1,
+				"teamId": 100,
+				"win": false,
+				"kills": 5,
+				"deaths": 2,
+				"assists": 7,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-player-10",
+				"riotIdGameName": "Joueur10",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "Jinx",
+				"championId": 1,
+				"teamId": 100,
+				"win": false,
+				"kills": 6,
+				"deaths": 2,
+				"assists": 8,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-player-11",
+				"riotIdGameName": "Joueur11",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "Thresh",
+				"championId": 1,
+				"teamId": 100,
+				"win": false,
+				"kills": 7,
+				"deaths": 2,
+				"assists": 9,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-friend",
+				"riotIdGameName": "Ami",
+				"riotIdTagline": "EUW1",
+				"summonerName": "",
+				"championName": "Darius",
+				"championId": 1,
+				"teamId": 200,
+				"win": true,
+				"kills": 1,
+				"deaths": 4,
+				"assists": 2,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-player-12",
+				"riotIdGameName": "Joueur12",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "Lux",
+				"championId": 1,
+				"teamId": 200,
+				"win": true,
+				"kills": 2,
+				"deaths": 4,
+				"assists": 3,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-player-13",
+				"riotIdGameName": "Joueur13",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "Vayne",
+				"championId": 1,
+				"teamId": 200,
+				"win": true,
+				"kills": 3,
+				"deaths": 4,
+				"assists": 4,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-player-14",
+				"riotIdGameName": "Joueur14",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "Nautilus",
+				"championId": 1,
+				"teamId": 200,
+				"win": true,
+				"kills": 4,
+				"deaths": 4,
+				"assists": 5,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			},
+			{
+				"puuid": "puuid-player-15",
+				"riotIdGameName": "Joueur15",
+				"riotIdTagline": "EUW",
+				"summonerName": "",
+				"championName": "Zed",
+				"championId": 1,
+				"teamId": 200,
+				"win": true,
+				"kills": 5,
+				"deaths": 4,
+				"assists": 6,
+				"gameEndedInEarlySurrender": false,
+				"profileIcon": 29
+			}
+		],
+		"teams": [
+			{
+				"teamId": 100,
+				"win": false
+			},
+			{
+				"teamId": 200,
+				"win": true
+			}
+		],
+		"gameEndTimestamp": 1792415705000
+	}
+}

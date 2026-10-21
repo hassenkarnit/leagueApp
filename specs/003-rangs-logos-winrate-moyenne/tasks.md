@@ -107,7 +107,7 @@ Aucune tâche bloquante : les fonctions pures sont rattachées aux user stories 
 - [X] T018 Vérifier la régression de la feature 002 : tous les tests existants (`LiveGameCard`, `LiveGameSection`, `live-game`) restent verts sans modification d'API ; aucun nouvel appel réseau (SC-005)
 - [X] T019 [P] Accessibilité (pas de mode sombre dans l'app ; vérifier aussi l'écran étroit) : contraste du pourcentage sur fond blanc et sur la ligne mise en évidence (`bg-indigo-50`) ; le pourcentage reste écrit ; emblèmes avec `alt`
 - [X] T020 Quality gate : `npm run test`, `npm run check`, `npm run lint` au vert
-- [ ] T021 Exécuter `quickstart.md` en réel (scénarios 1 à 7) avec une clé Riot valide, si un joueur est en partie classée ; sinon valider via les tests et le consigner dans la PR
+- [X] T021 Exécuter `quickstart.md` en réel (scénarios 1 à 7) avec une clé Riot valide, si un joueur est en partie classée ; sinon valider via les tests et le consigner dans la PR — **Validé par les tests** (331/331, check et lint au vert) ; pas de vérification en réel faute de joueur en partie classée.
 - [X] T022 Mettre à jour `CLAUDE.md` : « Features livrées » (ajouter `003-rangs-logos-winrate-moyenne`) et, si utile, l'emplacement `static/ranks/`
 
 ---

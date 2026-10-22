@@ -186,10 +186,7 @@ export interface LiveGame {
 	teams: [LiveTeam, LiveTeam];
 }
 
-export type LiveGameResult =
-	| { state: 'in-game'; game: LiveGame }
-	| { state: 'other-mode'; queueLabel: string }
-	| { state: 'not-in-game' };
+export type LiveGameResult = { state: 'in-game'; game: LiveGame } | { state: 'not-in-game' };
 
 export type RankedStats =
 	| {

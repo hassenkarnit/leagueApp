@@ -1,4 +1,4 @@
-# Data Model: Card « Partie en cours » (classée Solo/Duo)
+# Data Model: Card « Partie en cours »
 
 **Phase 1**. Types ajoutés à `src/lib/shared/types.ts` ; schémas zod des réponses Riot dans
 `src/lib/server/riot/schemas.ts`. Les types de la feature 001 (`Platform`, `Puuid`, `TeamSide`,
@@ -21,20 +21,19 @@ Union discriminée par `state` :
 
 | `state` | Champs | Affichage |
 |---|---|---|
-| `in-game` | `game: LiveGame` | la card (Solo/Duo uniquement) |
-| `other-mode` | `queueLabel: string` | « En partie ({queueLabel}), pas en classée Solo/Duo » |
-| `not-in-game` | — | « Pas de partie classée Solo/Duo en cours » |
+| `in-game` | `game: LiveGame` | la card (tous les modes) |
+| `not-in-game` | — | « Pas de partie en cours » |
 
-**Règle** : `in-game` si et seulement si `gameQueueConfigId === 420`.
+**Règle** : `in-game` dès que spectator-v5 renvoie une partie, quel que soit `gameQueueConfigId`.
 
 ## LiveGame — la partie en cours
 
 | Champ | Type | Règle |
 |---|---|---|
 | `gameId` | `number` | |
-| `queueLabel` | `string` | « Classée Solo/Duo » |
+| `queueLabel` | `string` | libellé du mode, ex. « Classée Solo/Duo », « ARAM » |
 | `startedAt` | `string \| null` (ISO) | `null` si `gameStartTime <= 0` → « Écran de chargement » (FR-004) |
-| `teams` | `[LiveTeam, LiveTeam]` | `blue` (100) puis `red` (200), 5 joueurs chacune |
+| `teams` | `[LiveTeam, LiveTeam]` | `blue` (100) puis `red` (200) |
 
 ## LiveTeam / LiveParticipant
 
@@ -72,7 +71,7 @@ Union discriminée par `status`, une entrée par PUUID demandé :
 ```text
           clic                       réponse in-game
  idle ─────────► checking ─────────────────────────────► showing-card ──┐
-  ▲                 │  réponse not-in-game / other-mode                  │ clic
+  ▲                 │  réponse not-in-game                               │ clic
   │                 ├──────────────────────────────────► showing-message │
   │                 │  erreur                                            │
   │                 └──────────────────────────────────► showing-error   │

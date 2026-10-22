@@ -138,6 +138,15 @@ extension, `Response.json`, runes Svelte 5, tests serveur `*.test.ts` (Node + MS
 
 ---
 
+## Phase 7: Évolution — card pour tous les modes (clarification du 2026-10-23)
+
+- [X] T044 Mettre à jour spec (FR-002, FR-003, US1-5/6/7, hypothèses), data-model, contrat et quickstart : plus d'état `other-mode`, message « Pas de partie en cours »
+- [X] T045 Tests d'abord : ARAM → `in-game` avec `queueLabel` « ARAM » dans `src/lib/server/live-game.test.ts` ; message « Pas de partie en cours » dans `src/lib/components/LiveGameSection.svelte.test.ts`
+- [X] T046 Retirer le filtre Solo/Duo de `src/lib/server/live-game.ts`, l'état `other-mode` de `src/lib/shared/types.ts` et de `src/lib/components/LiveGameSection.svelte` ; mettre à jour `README.md`
+- [X] T047 Quality gates : `npm run test`, `npm run check`, `npm run lint`
+
+---
+
 ## Dependencies & Execution Order
 
 - **Setup → Foundational** : bloquant pour toutes les stories.

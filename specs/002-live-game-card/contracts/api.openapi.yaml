@@ -15,7 +15,7 @@ paths:
       summary: Vérifie si le joueur est en partie (appelé uniquement au clic, FR-001)
       description: |
         Jamais mis en cache côté serveur. Un joueur hors partie n'est pas une erreur (200,
-        `state: not-in-game`). Une partie d'un autre mode renvoie `state: other-mode`.
+        `state: not-in-game`). Toute partie, quel que soit le mode, renvoie `state: in-game`.
       parameters:
         - name: platform
           in: path
@@ -82,11 +82,6 @@ components:
             state: { const: in-game }
             game: { $ref: '#/components/schemas/LiveGame' }
         - type: object
-          required: [state, queueLabel]
-          properties:
-            state: { const: other-mode }
-            queueLabel: { type: string }
-        - type: object
           required: [state]
           properties:
             state: { const: not-in-game }
@@ -96,7 +91,7 @@ components:
       required: [gameId, queueLabel, startedAt, teams]
       properties:
         gameId: { type: integer }
-        queueLabel: { type: string, examples: ['Classée Solo/Duo'] }
+        queueLabel: { type: string, examples: ['Classée Solo/Duo', 'ARAM'] }
         startedAt:
           type: [string, 'null']
           format: date-time

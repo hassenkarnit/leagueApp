@@ -1,4 +1,4 @@
-# Feature Specification: Card « Partie en cours » (classée Solo/Duo)
+# Feature Specification: Card « Partie en cours »
 
 **Feature Branch**: `002-live-game-card`
 
@@ -13,14 +13,14 @@ analyse des parties, badges `👥`, panneau « parties communes », lien « Voir
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Afficher la partie classée Solo/Duo en cours d'un joueur (Priority: P1)
+### User Story 1 - Afficher la partie en cours d'un joueur (Priority: P1)
 
 Pendant l'écran de chargement, l'utilisateur recherche son propre Riot ID (ou celui de n'importe
 quel joueur). Sur le profil, il clique sur « Actualiser la partie en cours ». Si le joueur est en
-partie classée Solo/Duo, une grande card apparaît en haut du profil, au-dessus de l'historique :
+partie, quel que soit le mode (classée, normale, ARAM…), une grande card apparaît en haut du profil, au-dessus de l'historique :
 les deux équipes de 5 joueurs y sont entièrement visibles, sans rien à déplier, avec pour chacun
 son Riot ID et son champion, ainsi que la durée écoulée de la partie. Sinon, un court message
-indique qu'il n'y a pas de partie classée Solo/Duo en cours.
+indique qu'il n'y a pas de partie en cours.
 
 **Why this priority**: c'est le socle de la feature : sans la card, ni les badges ni les
 statistiques n'ont où s'afficher. Seule, elle apporte déjà de la valeur (voir la composition
@@ -28,8 +28,7 @@ d'une partie classée en direct).
 
 **Independent Test**: ouvrir le profil d'un joueur en partie classée Solo/Duo, cliquer sur
 « Actualiser la partie en cours » et vérifier que la card affiche les deux équipes complètes ;
-faire de même avec un joueur hors partie et vérifier le message « Pas de partie classée Solo/Duo
-en cours ».
+faire de même avec un joueur hors partie et vérifier le message « Pas de partie en cours ».
 
 **Acceptance Scenarios**:
 
@@ -44,13 +43,13 @@ en cours ».
 4. **Given** une partie encore à l'écran de chargement, **When** la card s'affiche, **Then** elle
    indique « Écran de chargement » au lieu d'une durée.
 5. **Given** un joueur hors partie, **When** l'utilisateur clique sur le bouton, **Then** le
-   message « Pas de partie classée Solo/Duo en cours » s'affiche, sans card.
+   message « Pas de partie en cours » s'affiche, sans card.
 6. **Given** un joueur en partie d'un autre mode (ARAM, normale, Flex…), **When** l'utilisateur
-   clique sur le bouton, **Then** le message indique que le joueur est en partie, mais pas en
-   classée Solo/Duo (ex. « En partie (ARAM), pas en classée Solo/Duo »), sans card.
+   clique sur le bouton, **Then** la card s'affiche comme pour la Solo/Duo, avec le nom du mode
+   (ex. « ARAM »).
 7. **Given** la card affichée, **When** l'utilisateur clique à nouveau sur le bouton et que la
-   partie est terminée, **Then** la card disparaît et le message « Pas de partie classée Solo/Duo
-   en cours » s'affiche.
+   partie est terminée, **Then** la card disparaît et le message « Pas de partie en cours »
+   s'affiche.
 8. **Given** la vérification impossible (service Riot indisponible, quota atteint), **When**
    l'utilisateur clique sur le bouton, **Then** un message clair l'indique, et le profil et
    l'historique restent affichés normalement.
@@ -117,8 +116,8 @@ pourcentage de victoires et le nombre de victoires et de défaites.
   l'utilisateur ne clique pas sur « Actualiser la partie en cours » (FR-001).
 - **Clics répétés sur « Actualiser »** : une seule vérification à la fois ; le bouton est inactif
   pendant la vérification.
-- **Joueur en partie d'un autre mode** (ARAM, normale, Flex, Arena…) : pas de card, message
-  indiquant le mode (FR-003).
+- **Joueur en partie d'un autre mode** (ARAM, normale, Flex…) : card affichée avec le nom du
+  mode (FR-002) ; le rang affiché reste celui de la Solo/Duo (FR-012).
 - **Joueur non classé en Solo/Duo cette saison** (placements en cours) alors qu'il joue en
   Solo/Duo : « Non classé ».
 - **Joueur recherché = compte de référence** : la card affiche sa propre partie ; il est
@@ -141,12 +140,11 @@ pourcentage de victoires et le nombre de victoires et de défaites.
   en cours » ; la partie en cours n'est vérifiée qu'au clic sur ce bouton, jamais
   automatiquement (ni à l'ouverture du profil, ni à intervalle régulier). Pendant la
   vérification, le bouton DOIT être inactif et indiquer un chargement.
-- **FR-002**: Si le joueur est en partie classée Solo/Duo, le système DOIT afficher une card
-  « Partie en cours » au-dessus de l'historique, sur toute la largeur du contenu.
-- **FR-003**: Si le joueur n'est pas en partie, le système DOIT afficher « Pas de partie classée
-  Solo/Duo en cours » ; s'il est en partie dans un autre mode, le système DOIT afficher qu'il est
-  en partie mais pas en classée Solo/Duo, en nommant le mode (mêmes libellés français que
-  l'historique de la feature 001). Dans ces deux cas, aucune card n'est affichée.
+- **FR-002**: Si le joueur est en partie, quel que soit le mode, le système DOIT afficher une
+  card « Partie en cours » au-dessus de l'historique, sur toute la largeur du contenu, avec le
+  nom du mode (mêmes libellés français que l'historique de la feature 001).
+- **FR-003**: Si le joueur n'est pas en partie, le système DOIT afficher « Pas de partie en
+  cours », sans card.
 - **FR-004**: La card DOIT afficher la durée écoulée depuis le début de la partie (format
   `mm:ss`), mise à jour automatiquement chaque seconde ; tant que la partie n'a pas commencé
   (écran de chargement), elle DOIT afficher « Écran de chargement ».
@@ -221,8 +219,8 @@ pourcentage de victoires et le nombre de victoires et de défaites.
   une partie apparaît dès l'écran de chargement et disparaît à sa fin, avec un léger décalage
   possible.
 - L'utilisateur accède à sa propre partie en recherchant son Riot ID (pas d'accès direct dédié).
-- Seules les parties classées Solo/Duo affichent une card (toujours 2 équipes de 5 joueurs
-  humains).
+- Toutes les parties affichent une card ; seules les équipes bleue (100) et rouge (200) sont
+  affichées (les modes à plus de deux équipes, comme Arena, ne sont pas gérés spécifiquement).
 - Seul le rang **actuel** en Solo/Duo est affiché : le meilleur rang de carrière (saisons
   passées) n'est pas fourni par le service de Riot Games et est hors périmètre.
 - La classée Flex, les maîtrises de champion, les statistiques par champion, les bannissements,
@@ -247,3 +245,8 @@ pourcentage de victoires et le nombre de victoires et de défaites.
 - Q: Le meilleur rang de carrière (non fourni par Riot) ? → A: Rang actuel seulement.
 - Q (découvert pendant l'essai réel) : que faire d'un joueur dont Riot masque l'identité ? →
   A: l'afficher « Joueur masqué » avec son champion, sans badge ni statistiques (FR-006a).
+
+### Session 2026-10-23
+
+- Q: Quelles parties affichent la card ? → A: Toutes les parties, quel que soit le mode (révise
+  « uniquement Solo/Duo ») ; le rang affiché reste celui de la Solo/Duo.

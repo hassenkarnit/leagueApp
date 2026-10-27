@@ -36,20 +36,10 @@ describe('LiveGameSection (US1)', () => {
 		await expect.element(screen.getByRole('button', BUTTON)).toBeEnabled();
 	});
 
-	it('hors partie : « Pas de partie classée Solo/Duo en cours »', async () => {
+	it('hors partie : « Pas de partie en cours »', async () => {
 		const screen = renderSection(async () => ({ state: 'not-in-game' }));
 		await screen.getByRole('button', BUTTON).click();
-		await expect
-			.element(screen.getByText('Pas de partie classée Solo/Duo en cours'))
-			.toBeInTheDocument();
-	});
-
-	it('autre mode : « En partie (ARAM), pas en classée Solo/Duo »', async () => {
-		const screen = renderSection(async () => ({ state: 'other-mode', queueLabel: 'ARAM' }));
-		await screen.getByRole('button', BUTTON).click();
-		await expect
-			.element(screen.getByText('En partie (ARAM), pas en classée Solo/Duo'))
-			.toBeInTheDocument();
+		await expect.element(screen.getByText('Pas de partie en cours')).toBeInTheDocument();
 	});
 
 	it('erreur : message clair', async () => {
@@ -75,9 +65,7 @@ describe('LiveGameSection (US1)', () => {
 		await expect.element(screen.getByRole('button', BUTTON)).toBeDisabled();
 		await expect.element(screen.getByRole('region', { name: 'Partie en cours' })).toBeVisible();
 		results[1].resolve({ state: 'not-in-game' });
-		await expect
-			.element(screen.getByText('Pas de partie classée Solo/Duo en cours'))
-			.toBeInTheDocument();
+		await expect.element(screen.getByText('Pas de partie en cours')).toBeInTheDocument();
 		expect(screen.getByRole('region', { name: 'Partie en cours' }).elements()).toHaveLength(0);
 	});
 });

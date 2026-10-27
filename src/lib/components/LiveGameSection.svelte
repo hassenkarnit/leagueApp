@@ -104,11 +104,7 @@
 			{onselect}
 			{now}
 		/>
-	{:else if result?.state === 'other-mode'}
-		<p role="status" class="text-sm text-zinc-600">
-			En partie ({result.queueLabel}), pas en classée Solo/Duo
-		</p>
 	{:else if result?.state === 'not-in-game'}
-		<p role="status" class="text-sm text-zinc-600">Pas de partie classée Solo/Duo en cours</p>
+		<p role="status" class="text-sm text-zinc-600">Pas de partie en cours</p>
 	{/if}
 </div>

@@ -10,8 +10,8 @@ Application web de suivi de joueurs League of Legends basée sur l'API Riot Game
 - **« Ai-je déjà joué avec ce joueur ? »** : définis ton compte (« Moi »), lance l'analyse de tes
   100 dernières parties, puis repère d'un coup d'œil les joueurs déjà croisés (badge `👥 N`) et
   consulte le détail (même équipe / adversaires, victoires / défaites, dernière partie).
-- **Partie en cours** : sur un profil, le bouton « Actualiser la partie en cours » affiche, pour une
-  classée Solo/Duo, les deux équipes avec le champion, le rang actuel et le % de victoires de
+- **Partie en cours** : sur un profil, le bouton « Actualiser la partie en cours » affiche, quel que
+  soit le mode, les deux équipes avec le champion, le rang Solo/Duo actuel et le % de victoires de
   chaque joueur, la durée de la partie et les badges `👥` des joueurs déjà croisés.
 - Application **locale** : la clé API Riot reste sur ton ordinateur, côté serveur.
 

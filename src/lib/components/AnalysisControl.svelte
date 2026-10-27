@@ -49,11 +49,19 @@
 		}
 	}
 
-	// État initial, puis à chaque changement de compte de référence.
+	// Au chargement : lance l'analyse sans attendre de clic. Le serveur ne redemande à Riot que
+	// les nouveaux matchs (ceux déjà stockés ne sont pas rechargés). Pas de relance automatique
+	// après un échec (clé expirée…) : le bouton reste là pour réessayer.
+	async function load() {
+		await refresh();
+		if (status && status.state !== 'running' && status.state !== 'failed') await start();
+	}
+
+	// Au chargement, puis à chaque changement de compte de référence.
 	$effect(() => {
 		void reference.puuid;
 		status = null;
-		refresh();
+		load();
 	});
 
 	// Interroge l'état toutes les secondes tant que l'analyse tourne (FR-012a).

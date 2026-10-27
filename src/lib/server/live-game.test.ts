@@ -71,6 +71,7 @@ describe('getLiveGame', () => {
 		const result = await liveGame.getLiveGame('euw1', 'puuid-reference');
 		if (result.state !== 'in-game') throw new Error('in-game attendu');
 		expect(result.game.queueLabel).toBe('ARAM');
+		expect(result.game.teams.map((t) => t.participants.length)).toEqual([5, 5]);
 	});
 
 	it('hors partie → « not-in-game »', async () => {

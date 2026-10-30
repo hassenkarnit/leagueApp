@@ -1,0 +1,28 @@
+# CI : quality gate (types, lint, tests, build) à chaque push et pull request.
+# Le déploiement (CD) est fait par Render, seulement quand cette CI passe sur main (render.yaml).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    env:
+      # Fausse clé : le build valide son format, les tests passent par MSW (jamais la vraie clé).
+      RIOT_API_KEY: RGAPI-ci-factice
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      # Navigateur des tests « client » (Vitest browser).
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build

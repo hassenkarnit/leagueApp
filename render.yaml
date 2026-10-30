@@ -1,0 +1,16 @@
+# Blueprint Render : app SvelteKit (adapter-node) sur le plan gratuit.
+# Déploiement automatique à chaque commit sur main, une fois la CI GitHub au vert.
+services:
+  - type: web
+    name: leagueapp
+    runtime: node
+    plan: free
+    branch: main
+    autoDeployTrigger: checksPass
+    buildCommand: npm ci && npm run build
+    startCommand: node build
+    healthCheckPath: /
+    envVars:
+      # À saisir dans le tableau de bord Render (jamais dans le dépôt).
+      - key: RIOT_API_KEY
+        sync: false

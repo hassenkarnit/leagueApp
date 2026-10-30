@@ -79,3 +79,14 @@ npm run dev                      # → http://localhost:5173
 | `npm run build` puis `node build` | Version optimisée en local                      |
 
 Stack : SvelteKit 3 · Svelte 5 · TypeScript 6 · Tailwind CSS 4 · Vitest · MSW · zod.
+
+## CI/CD et déploiement
+
+- **CI** (`.github/workflows/ci.yml`) : à chaque push sur `main` et chaque pull request, GitHub
+  Actions lance `check`, `lint`, `test` et `build` (avec une fausse clé Riot).
+- **CD** (`render.yaml`) : Render redéploie l'app (plan gratuit) à chaque commit sur `main`, une
+  fois la CI au vert.
+
+Mise en place (une seule fois) : sur [render.com](https://render.com), **New → Blueprint**, choisir
+ce dépôt, puis saisir `RIOT_API_KEY`. Sur le plan gratuit, l'app s'endort après 15 min sans
+visite et le disque est effacé au redémarrage : l'analyse de l'historique est alors refaite.

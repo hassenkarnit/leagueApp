@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { toApiError } from '#lib/client/api.ts';
 	import { formatRelativeDate } from '#lib/shared/format.ts';
 	import type {
@@ -14,7 +15,8 @@
 		reference,
 		api,
 		pollIntervalMs = 1000,
-		now = Date.now
+		now = Date.now,
+		ondone
 	}: {
 		reference: ReferenceAccount;
 		api: {
@@ -23,6 +25,8 @@
 		};
 		pollIntervalMs?: number;
 		now?: () => number;
+		/** Appelé quand une analyse en cours se termine (pour rafraîchir ce qui en dépend). */
+		ondone?: () => void;
 	} = $props();
 
 	let status = $state<AnalysisStatus | null>(null);
@@ -33,8 +37,11 @@
 
 	async function refresh() {
 		try {
+			// untrack : refresh() est appelée depuis un $effect, qui ne doit pas dépendre de `status`.
+			const wasRunning = untrack(() => running);
 			status = await api.getStatus(reference.puuid);
 			requestError = null;
+			if (wasRunning && status.state !== 'running') ondone?.();
 		} catch (err) {
 			requestError = toApiError(err);
 		}

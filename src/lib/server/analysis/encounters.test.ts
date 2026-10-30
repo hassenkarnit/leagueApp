@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { FRIEND, REF, sampleAnalysis } from '../../../../tests/fixtures/app/analysis.ts';
-import { countEncounters, summarizeEncounter } from './encounters.ts';
+import { FRIEND, REF, other, sampleAnalysis } from '../../../../tests/fixtures/app/analysis.ts';
+import { countEncounters, listRecurringPlayers, summarizeEncounter } from './encounters.ts';
 
 const label = (queueId: number) => `File ${queueId}`;
 
@@ -73,5 +73,36 @@ describe('summarizeEncounter', () => {
 		const summary = summarizeEncounter(sampleAnalysis(), REF, label);
 		expect(summary.isSelf).toBe(true);
 		expect(summary.total).toBe(0);
+	});
+});
+
+describe('listRecurringPlayers', () => {
+	it('garde les joueurs croisés au moins 2 fois, avec / contre moi, le plus fréquent en premier', () => {
+		expect(listRecurringPlayers(sampleAnalysis())).toEqual([
+			{
+				puuid: FRIEND,
+				gameName: 'Ami',
+				tagLine: 'EUW',
+				total: 3,
+				sameTeam: 2,
+				opponents: 1,
+				lastPlayedAt: '2026-10-19T12:00:00.000Z'
+			},
+			{
+				puuid: 'puuid-x',
+				gameName: 'puuid-x',
+				tagLine: 'EUW',
+				total: 2,
+				sameTeam: 1,
+				opponents: 1,
+				lastPlayedAt: '2026-10-19T12:00:00.000Z'
+			}
+		]);
+	});
+
+	it('ne liste jamais le compte de référence lui-même', () => {
+		const analysis = sampleAnalysis();
+		for (const m of Object.values(analysis.matches)) m.others.push(other(REF, 'blue'));
+		expect(listRecurringPlayers(analysis).some((p) => p.puuid === REF)).toBe(false);
 	});
 });

@@ -76,6 +76,20 @@ describe('AnalysisControl', () => {
 		expect(api.start).toHaveBeenCalledWith('puuid-reference', 'euw1');
 	});
 
+	it('prévient (ondone) quand l’analyse en cours se termine', async () => {
+		const states = [
+			status({ state: 'running', processed: 1, total: 4 }),
+			status({ state: 'done', lastAnalyzedAt: '2026-10-20T11:59:50.000Z' })
+		];
+		const api = {
+			getStatus: vi.fn(async () => (states.length > 1 ? states.shift()! : states[0])),
+			start: vi.fn()
+		};
+		const ondone = vi.fn();
+		render(AnalysisControl, { reference: ME, api, now: () => NOW, pollIntervalMs: 10, ondone });
+		await expect.poll(() => ondone).toHaveBeenCalledOnce();
+	});
+
 	it('affiche la date de la dernière analyse (FR-012b)', async () => {
 		const done = status({
 			state: 'done',

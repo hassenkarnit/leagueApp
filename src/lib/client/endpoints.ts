@@ -9,6 +9,7 @@ import type {
 	PlayerProfile,
 	Puuid,
 	RankedStatsMap,
+	RecurringPlayer,
 	RiotId
 } from '#lib/shared/types.ts';
 import { apiGet, apiPost } from './api.ts';
@@ -43,6 +44,14 @@ export function getEncounterSummary(
 	otherPuuid: Puuid
 ): Promise<EncounterSummary> {
 	return apiGet(`/api/reference/${enc(referencePuuid)}/encounters/${enc(otherPuuid)}`);
+}
+
+/** Joueurs croisés au moins 2 fois par le compte de référence. */
+export async function getRecurringPlayers(referencePuuid: Puuid): Promise<RecurringPlayer[]> {
+	const { players } = await apiGet<{ players: RecurringPlayer[] }>(
+		`/api/reference/${enc(referencePuuid)}/recurring`
+	);
+	return players;
 }
 
 /** Partie en cours (feature 002). `apiBase` = « /api/players/{platform}/{riotId} ». */

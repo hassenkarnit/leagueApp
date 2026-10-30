@@ -129,6 +129,19 @@ export interface EncounterSummary {
 	period: { analyzedCount: number; oldestMatchAt: string | null };
 }
 
+/** Joueur croisé plusieurs fois par le compte de référence (liste « joueurs récurrents »). */
+export interface RecurringPlayer {
+	puuid: Puuid;
+	/** Riot ID vu dans la partie commune la plus récente. */
+	gameName: string;
+	tagLine: string;
+	total: number;
+	/** Parties dans mon équipe / en face. */
+	sameTeam: number;
+	opponents: number;
+	lastPlayedAt: string;
+}
+
 /** Nombre de parties communes par joueur ; les joueurs jamais croisés sont absents (FR-010a). */
 export type EncounterCounts = Record<Puuid, number>;
 

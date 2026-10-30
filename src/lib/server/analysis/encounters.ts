@@ -5,7 +5,8 @@ import type {
 	EncounterStats,
 	EncounterSummary,
 	MatchOutcome,
-	Puuid
+	Puuid,
+	RecurringPlayer
 } from '#lib/shared/types.ts';
 import type { Analysis, AnalyzedMatch } from './store.ts';
 
@@ -83,6 +84,36 @@ export function summarizeEncounter(
 		games,
 		period: period(analysis)
 	};
+}
+
+/** Joueurs croisés au moins `minGames` fois, du plus fréquent au moins fréquent. */
+export function listRecurringPlayers(analysis: Analysis, minGames = 2): RecurringPlayer[] {
+	const players = new Map<Puuid, RecurringPlayer>();
+	// Du plus récent au plus ancien : le premier Riot ID rencontré est le plus à jour.
+	for (const match of newestFirst(Object.values(analysis.matches))) {
+		for (const other of match.others) {
+			if (other.puuid === analysis.puuid) continue;
+			let player = players.get(other.puuid);
+			if (!player) {
+				player = {
+					puuid: other.puuid,
+					gameName: other.gameName,
+					tagLine: other.tagLine,
+					total: 0,
+					sameTeam: 0,
+					opponents: 0,
+					lastPlayedAt: match.playedAt
+				};
+				players.set(other.puuid, player);
+			}
+			player.total += 1;
+			if (other.side === match.referenceSide) player.sameTeam += 1;
+			else player.opponents += 1;
+		}
+	}
+	return [...players.values()]
+		.filter((p) => p.total >= minGames)
+		.sort((a, b) => b.total - a.total || b.lastPlayedAt.localeCompare(a.lastPlayedAt));
 }
 
 /** Pour l'état de l'analyse : début de la période analysée. */

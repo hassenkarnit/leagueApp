@@ -26,9 +26,11 @@ function status(overrides: Partial<AnalysisStatus> = {}): AnalysisStatus {
 }
 
 describe('AnalysisControl', () => {
-	it('propose le bouton « Analyser mon historique »', async () => {
-		const api = { getStatus: vi.fn(async () => status()), start: vi.fn() };
+	it('lance l’analyse automatiquement au chargement', async () => {
+		const done = status({ state: 'done', lastAnalyzedAt: '2026-10-18T12:00:00.000Z' });
+		const api = { getStatus: vi.fn(async () => done), start: vi.fn(async () => done) };
 		const screen = render(AnalysisControl, { reference: ME, api, now: () => NOW });
+		await expect.poll(() => api.start).toHaveBeenCalledWith('puuid-reference', 'euw1');
 		await expect
 			.element(screen.getByRole('button', { name: 'Analyser mon historique' }))
 			.toBeEnabled();
@@ -45,11 +47,11 @@ describe('AnalysisControl', () => {
 		});
 		await expect.element(screen.getByText('37 / 100 parties analysées')).toBeInTheDocument();
 		await expect.element(screen.getByRole('button', { name: /Analyse en cours/ })).toBeDisabled();
+		expect(api.start).not.toHaveBeenCalled();
 	});
 
-	it('lance l’analyse puis interroge l’état jusqu’à la fin', async () => {
+	it('interroge l’état jusqu’à la fin, puis permet de relancer au clic', async () => {
 		const states = [
-			status({ state: 'never' }),
 			status({ state: 'running', processed: 1, total: 4 }),
 			status({
 				state: 'done',
@@ -60,7 +62,7 @@ describe('AnalysisControl', () => {
 			})
 		];
 		const api = {
-			getStatus: vi.fn(async () => states.shift() ?? states[0] ?? status({ state: 'done' })),
+			getStatus: vi.fn(async () => (states.length > 1 ? states.shift()! : states[0])),
 			start: vi.fn(async () => status({ state: 'running', processed: 0, total: 4 }))
 		};
 		const screen = render(AnalysisControl, {
@@ -69,9 +71,23 @@ describe('AnalysisControl', () => {
 			now: () => NOW,
 			pollIntervalMs: 10
 		});
+		await expect.element(screen.getByText(/Dernière analyse : à l'instant/)).toBeInTheDocument();
 		await screen.getByRole('button', { name: 'Analyser mon historique' }).click();
 		expect(api.start).toHaveBeenCalledWith('puuid-reference', 'euw1');
-		await expect.element(screen.getByText(/Dernière analyse : à l'instant/)).toBeInTheDocument();
+	});
+
+	it('prévient (ondone) quand l’analyse en cours se termine', async () => {
+		const states = [
+			status({ state: 'running', processed: 1, total: 4 }),
+			status({ state: 'done', lastAnalyzedAt: '2026-10-20T11:59:50.000Z' })
+		];
+		const api = {
+			getStatus: vi.fn(async () => (states.length > 1 ? states.shift()! : states[0])),
+			start: vi.fn()
+		};
+		const ondone = vi.fn();
+		render(AnalysisControl, { reference: ME, api, now: () => NOW, pollIntervalMs: 10, ondone });
+		await expect.poll(() => ondone).toHaveBeenCalledOnce();
 	});
 
 	it('affiche la date de la dernière analyse (FR-012b)', async () => {
@@ -80,7 +96,7 @@ describe('AnalysisControl', () => {
 			lastAnalyzedAt: '2026-10-18T12:00:00.000Z',
 			analyzedCount: 98
 		});
-		const api = { getStatus: vi.fn(async () => done), start: vi.fn() };
+		const api = { getStatus: vi.fn(async () => done), start: vi.fn(async () => done) };
 		const screen = render(AnalysisControl, { reference: ME, api, now: () => NOW });
 		await expect.element(screen.getByText(/Dernière analyse : il y a 2 jours/)).toBeInTheDocument();
 	});
@@ -93,5 +109,6 @@ describe('AnalysisControl', () => {
 		const api = { getStatus: vi.fn(async () => failed), start: vi.fn() };
 		const screen = render(AnalysisControl, { reference: ME, api, now: () => NOW });
 		await expect.element(screen.getByRole('alert')).toHaveTextContent('Clé API Riot invalide');
+		expect(api.start).not.toHaveBeenCalled();
 	});
 });

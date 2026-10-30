@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { toApiError } from '#lib/client/api.ts';
 	import { formatRelativeDate } from '#lib/shared/format.ts';
 	import type {
@@ -14,7 +15,8 @@
 		reference,
 		api,
 		pollIntervalMs = 1000,
-		now = Date.now
+		now = Date.now,
+		ondone
 	}: {
 		reference: ReferenceAccount;
 		api: {
@@ -23,6 +25,8 @@
 		};
 		pollIntervalMs?: number;
 		now?: () => number;
+		/** Appelé quand une analyse en cours se termine (pour rafraîchir ce qui en dépend). */
+		ondone?: () => void;
 	} = $props();
 
 	let status = $state<AnalysisStatus | null>(null);
@@ -33,8 +37,11 @@
 
 	async function refresh() {
 		try {
+			// untrack : refresh() est appelée depuis un $effect, qui ne doit pas dépendre de `status`.
+			const wasRunning = untrack(() => running);
 			status = await api.getStatus(reference.puuid);
 			requestError = null;
+			if (wasRunning && status.state !== 'running') ondone?.();
 		} catch (err) {
 			requestError = toApiError(err);
 		}
@@ -49,11 +56,19 @@
 		}
 	}
 
-	// État initial, puis à chaque changement de compte de référence.
+	// Au chargement : lance l'analyse sans attendre de clic. Le serveur ne redemande à Riot que
+	// les nouveaux matchs (ceux déjà stockés ne sont pas rechargés). Pas de relance automatique
+	// après un échec (clé expirée…) : le bouton reste là pour réessayer.
+	async function load() {
+		await refresh();
+		if (status && status.state !== 'running' && status.state !== 'failed') await start();
+	}
+
+	// Au chargement, puis à chaque changement de compte de référence.
 	$effect(() => {
 		void reference.puuid;
 		status = null;
-		refresh();
+		load();
 	});
 
 	// Interroge l'état toutes les secondes tant que l'analyse tourne (FR-012a).

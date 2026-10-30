@@ -15,9 +15,6 @@ import { sideOf } from './riot/match-utils.ts';
 import type { ActiveParticipantDto, LeagueEntryDto } from './riot/schemas.ts';
 import type { StaticData } from './static-data.ts';
 
-/** File de la classée Solo/Duo : seule file qui affiche la card (spec, clarification Q3). */
-export const SOLO_DUO_QUEUE_ID = 420;
-
 const RANKED_TTL_MS = 10 * 60 * 1000;
 
 export interface LiveGameServiceOptions {
@@ -77,8 +74,8 @@ export function createLiveGameService({
 			const game = await riot.getActiveGame(puuid, platform, 'interactive');
 			if (!game) return { state: 'not-in-game' };
 
+			// Tous les modes affichent la card (ARAM, normales, Flex…), pas seulement la Solo/Duo.
 			const queueLabel = await staticData.getQueueLabel(game.gameQueueConfigId);
-			if (game.gameQueueConfigId !== SOLO_DUO_QUEUE_ID) return { state: 'other-mode', queueLabel };
 
 			const teams = await Promise.all(
 				([100, 200] as const).map(async (teamId): Promise<LiveTeam> => ({

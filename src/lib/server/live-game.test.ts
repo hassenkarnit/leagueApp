@@ -65,13 +65,13 @@ describe('getLiveGame', () => {
 		});
 	});
 
-	it('autre mode → « other-mode » avec le libellé du mode', async () => {
+	it('autre mode (ARAM) → « in-game » aussi, avec le libellé du mode', async () => {
 		server.use(http.get(RIOT_PATHS.activeGame, () => Response.json(activeGameAram)));
 		const { liveGame } = setup();
-		expect(await liveGame.getLiveGame('euw1', 'puuid-reference')).toEqual({
-			state: 'other-mode',
-			queueLabel: 'ARAM'
-		});
+		const result = await liveGame.getLiveGame('euw1', 'puuid-reference');
+		if (result.state !== 'in-game') throw new Error('in-game attendu');
+		expect(result.game.queueLabel).toBe('ARAM');
+		expect(result.game.teams.map((t) => t.participants.length)).toEqual([5, 5]);
 	});
 
 	it('hors partie → « not-in-game »', async () => {

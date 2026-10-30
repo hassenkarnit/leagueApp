@@ -65,7 +65,7 @@ describe('getLiveGame', () => {
 		});
 	});
 
-	it('autre mode (ARAM) → « in-game » aussi, avec le libellé du mode', async () => {
+	it('autre mode → « in-game » aussi, avec le libellé du mode', async () => {
 		server.use(http.get(RIOT_PATHS.activeGame, () => Response.json(activeGameAram)));
 		const { liveGame } = setup();
 		const result = await liveGame.getLiveGame('euw1', 'puuid-reference');

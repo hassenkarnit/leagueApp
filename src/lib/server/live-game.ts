@@ -74,9 +74,8 @@ export function createLiveGameService({
 			const game = await riot.getActiveGame(puuid, platform, 'interactive');
 			if (!game) return { state: 'not-in-game' };
 
-			// Tous les modes affichent la card (ARAM, normales, Flex…), pas seulement la Solo/Duo.
+			// Tous les modes affichent la card (spec 002, clarification du 2026-10-23).
 			const queueLabel = await staticData.getQueueLabel(game.gameQueueConfigId);
-
 			const teams = await Promise.all(
 				([100, 200] as const).map(async (teamId): Promise<LiveTeam> => ({
 					side: sideOf(teamId),
